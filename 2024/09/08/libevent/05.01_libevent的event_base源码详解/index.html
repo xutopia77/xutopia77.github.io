@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>05.01_libevent的event_base源码详解 | xutopia77</title><meta name="author" content="xutopia77"><meta name="copyright" content="xutopia77"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="libevent的event_base源码详解event_base在 libevent 中，event_base（事件基） 是一个核心组件，它负责管理所有的事件及其相关的回调函数。event_base 实际上是一个事件循环（Event Loop）的基础，用于监控和调度事件。每个 event_base 实例都是一个独立的事件管理系统，可以用来管理一组事件，并且可以独立于其他 event_base 实">
+<meta property="og:type" content="article">
+<meta property="og:title" content="05.01_libevent的event_base源码详解">
+<meta property="og:url" content="http://example.com/2024/09/08/libevent/05.01_libevent%E7%9A%84event_base%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="xutopia77">
+<meta property="og:description" content="libevent的event_base源码详解event_base在 libevent 中，event_base（事件基） 是一个核心组件，它负责管理所有的事件及其相关的回调函数。event_base 实际上是一个事件循环（Event Loop）的基础，用于监控和调度事件。每个 event_base 实例都是一个独立的事件管理系统，可以用来管理一组事件，并且可以独立于其他 event_base 实">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2024/09/08/libevent/05.01_libevent%E7%9A%84event_base%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3/5.jpg">
+<meta property="article:published_time" content="2024-09-08T14:51:51.402Z">
+<meta property="article:modified_time" content="2024-09-09T15:17:17.532Z">
+<meta property="article:author" content="xutopia77">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/09/08/libevent/05.01_libevent%E7%9A%84event_base%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3/5.jpg"><link rel="shortcut icon" href="/img/header_middle.jpg"><link rel="canonical" href="http://example.com/2024/09/08/libevent/05.01_libevent%E7%9A%84event_base%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '05.01_libevent的event_base源码详解',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-09-09 23:17:17'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/header_middle.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">14</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="xutopia77"><span class="site-name">xutopia77</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">05.01_libevent的event_base源码详解</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-09-08T14:51:51.402Z" title="Created 2024-09-08 22:51:51">2024-09-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-09-09T15:17:17.532Z" title="Updated 2024-09-09 23:17:17">2024-09-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="05.01_libevent的event_base源码详解"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="post-content" id="article-container"><h1 id="libevent的event-base源码详解"><a href="#libevent的event-base源码详解" class="headerlink" title="libevent的event_base源码详解"></a>libevent的event_base源码详解</h1><h3 id="event-base"><a href="#event-base" class="headerlink" title="event_base"></a>event_base</h3><p>在 <code>libevent</code> 中，<code>event_base</code>（事件基） 是一个核心组件，它负责管理所有的事件及其相关的回调函数。<code>event_base</code> 实际上是一个事件循环（Event Loop）的基础，用于监控和调度事件。每个 <code>event_base</code> 实例都是一个独立的事件管理系统，可以用来管理一组事件，并且可以独立于其他 <code>event_base</code> 实例运行。</p>
+<h4 id="创建事件基"><a href="#创建事件基" class="headerlink" title="创建事件基"></a>创建事件基</h4><p>在开始使用 <code>libevent</code> 之前，需要创建一个 <code>event_base</code> 实例。这通常是在程序启动时完成的，因为 <code>event_base</code> 是整个事件处理系统的中心。</p>
+<p><code>event_base</code> 可以通过以下两种方式创建：</p>
+<ul>
+<li><p><strong>使用 <code>event_base_new</code> 函数</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> event_base *<span class="title function_">event_base_new</span><span class="params">(<span class="type">void</span>)</span>;</span><br></pre></td></tr></table></figure>
+<p>这个函数创建一个新的 <code>event_base</code> 实例，并返回指向该实例的指针。如果创建失败，则返回 <code>NULL</code>。</p>
+</li>
+<li><p><strong>使用 <code>event_base_new_with_config</code> 函数</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> event_base *<span class="title function_">event_base_new_with_config</span><span class="params">(<span class="type">const</span> <span class="keyword">struct</span> event_config *config)</span>;</span><br></pre></td></tr></table></figure>
+<p>这个函数允许你指定一些配置选项来创建 <code>event_base</code>。例如，你可以指定底层事件机制（如 <code>poll</code>、<code>epoll</code> 等）。</p>
+</li>
+</ul>
+<h4 id="初始化和配置"><a href="#初始化和配置" class="headerlink" title="初始化和配置"></a>初始化和配置</h4><p>在创建 <code>event_base</code> 实例之后，你可能还需要对其进行一些初始化和配置操作，以适应特定的需求。例如：</p>
+<ul>
+<li><p><strong>启用调试模式</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">event_enable_debug_mode</span><span class="params">(<span class="type">void</span>)</span>;</span><br></pre></td></tr></table></figure>
+<p>调用此函数可以启用调试模式，这会在 <code>libevent</code> 内部增加额外的日志记录。</p>
+</li>
+<li><p><strong>设置内存管理函数</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">event_set_mem_functions</span><span class="params">(<span class="type">void</span> *(*malloc_fn)(<span class="type">size_t</span>), <span class="type">void</span> (*free_fn)(<span class="type">void</span> *))</span>;</span><br></pre></td></tr></table></figure>
+<p>你可以覆盖 <code>libevent</code> 使用的内存分配和释放函数，这对于需要特定内存管理策略的应用程序很有用。</p>
+</li>
+<li><p><strong>初始化线程支持</strong>：<br>如果你的应用程序是多线程的，需要使用 <code>evthread</code> 函数来初始化线程支持。例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;event2/thread.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">evthread_use_pthreads</span><span class="params">(<span class="type">void</span>)</span>;</span><br></pre></td></tr></table></figure>
+<p>这个函数初始化线程支持，使得 <code>libevent</code> 可以在多线程环境中安全地使用。</p>
+</li>
+</ul>
+<h4 id="添加事件"><a href="#添加事件" class="headerlink" title="添加事件"></a>添加事件</h4><p>创建好 <code>event_base</code> 后，你需要添加事件到其中。事件可以是基于文件描述符的（如监听套接字的读写事件），也可以是基于定时器或信号的。</p>
+<h5 id="添加文件描述符事件"><a href="#添加文件描述符事件" class="headerlink" title="添加文件描述符事件"></a>添加文件描述符事件</h5><p>创建一个文件描述符事件并将其添加到 <code>event_base</code> 中：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> event *<span class="title function_">event_new</span><span class="params">(<span class="keyword">struct</span> event_base *base, <span class="type">int</span> fd, <span class="type">short</span> flags, <span class="type">void</span> (*callback)(<span class="type">evutil_socket_t</span>, <span class="type">short</span>, <span class="type">void</span> *), <span class="type">void</span> *arg)</span>;</span><br></pre></td></tr></table></figure>
+<p>这个函数创建一个事件，并返回指向该事件的指针。你需要将事件添加到 <code>event_base</code> 中：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">event_add</span><span class="params">(<span class="keyword">struct</span> event *ev, <span class="type">const</span> <span class="keyword">struct</span> timeval *tv)</span>;</span><br></pre></td></tr></table></figure>
+<p><code>event_add</code> 函数将事件添加到 <code>event_base</code> 中，并设置事件的超时时间（如果有的话）。</p>
+<h5 id="添加定时器事件"><a href="#添加定时器事件" class="headerlink" title="添加定时器事件"></a>添加定时器事件</h5><p>创建一个定时器事件：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> event *<span class="title function_">evtimer_new</span><span class="params">(<span class="keyword">struct</span> event_base *base, <span class="type">void</span> (*callback)(<span class="type">evutil_socket_t</span>, <span class="type">short</span>, <span class="type">void</span> *), <span class="type">void</span> *arg)</span>;</span><br></pre></td></tr></table></figure>
+<p>然后添加定时器事件：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">event_add</span><span class="params">(<span class="keyword">struct</span> event *ev, <span class="type">const</span> <span class="keyword">struct</span> timeval *tv)</span>;</span><br></pre></td></tr></table></figure>
+<p>定时器事件可以设置超时时间，当超时时间到达时，对应的回调函数会被调用。</p>
+<h4 id="运行事件循环"><a href="#运行事件循环" class="headerlink" title="运行事件循环"></a>运行事件循环</h4><p>创建并配置好 <code>event_base</code> 之后，你需要运行事件循环来处理事件。<code>libevent</code> 提供了多种方式来运行事件循环：</p>
+<ul>
+<li><p><strong>使用 <code>event_base_dispatch</code> 函数</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">event_base_dispatch</span><span class="params">(<span class="keyword">struct</span> event_base *base)</span>;</span><br></pre></td></tr></table></figure>
+<p>这个函数进入事件循环，并一直运行直到没有更多的事件需要处理或手动退出。</p>
+</li>
+<li><p><strong>使用 <code>event_base_loop</code> 函数</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">event_base_loop</span><span class="params">(<span class="keyword">struct</span> event_base *base, <span class="type">int</span> flags)</span>;</span><br></pre></td></tr></table></figure>
+<p>这个函数允许你更细粒度地控制事件循环的行为，例如你可以指定只运行一次事件循环（<code>EVENT_BASE_ONCE</code>）。</p>
+</li>
+<li><p><strong>退出事件循环</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">event_base_loopexit</span><span class="params">(<span class="keyword">struct</span> event_base *base, <span class="type">void</span> *sig)</span>;</span><br></pre></td></tr></table></figure>
+<p>这个函数允许你在事件循环内部安全地退出事件循环。</p>
+</li>
+</ul>
+<h4 id="管理事件基"><a href="#管理事件基" class="headerlink" title="管理事件基"></a>管理事件基</h4><p>除了创建和运行事件基之外，还有一些函数用于管理和维护 <code>event_base</code>：</p>
+<ul>
+<li><p><strong>销毁事件基</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">event_base_free</span><span class="params">(<span class="keyword">struct</span> event_base *base)</span>;</span><br></pre></td></tr></table></figure>
+<p>这个函数销毁 <code>event_base</code> 及其所有关联的事件。</p>
+</li>
+<li><p><strong>检查事件基状态</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">event_base_is_running</span><span class="params">(<span class="type">const</span> <span class="keyword">struct</span> event_base *base)</span>;</span><br></pre></td></tr></table></figure>
+<p>这个函数检查 <code>event_base</code> 是否正在运行。</p>
+</li>
+</ul>
+<h4 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h4><p>&#x2F;&#x2F;[todo]</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://example.com">xutopia77</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://example.com/2024/09/08/libevent/05.01_libevent%E7%9A%84event_base%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3/">http://example.com/2024/09/08/libevent/05.01_libevent%E7%9A%84event_base%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/c/">c++</a><a class="post-meta__tags" href="/tags/%E7%BC%96%E7%A8%8B/">编程</a></div><div class="post_share"><div class="social-share" data-image="/2024/09/08/libevent/05.01_libevent%E7%9A%84event_base%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3/5.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/09/08/libevent/04_libevent%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" title="04_libevent的基本使用"><img class="cover" src="/2024/09/08/libevent/04_libevent%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/3.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">04_libevent的基本使用</div></div></a></div><div class="next-post pull-right"><a href="/2024/09/08/libevent/05.02_libevent%E7%9A%84event%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3/" title="05.02_libevent的event源码详解"><img class="cover" src="/2024/09/08/libevent/05.02_libevent%E7%9A%84event%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3/1.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next</div><div class="next_info">05.02_libevent的event源码详解</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2024/09/08/libevent/01_libevent%E5%BA%8F%E8%A8%80/" title="1，libevent序言"><img class="cover" src="/2024/09/08/libevent/01_libevent%E5%BA%8F%E8%A8%80/1.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-08</div><div class="title">1，libevent序言</div></div></a></div><div><a href="/2024/09/08/libevent/02_libevent%E7%9A%84%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85/" title="2，libevent的下载编译安装"><img class="cover" src="/2024/09/08/libevent/02_libevent%E7%9A%84%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85/5.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-08</div><div class="title">2，libevent的下载编译安装</div></div></a></div><div><a href="/2024/09/08/libevent/03_libevent%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B8%8EAPI/" title="3，libevent的核心概念与API"><img class="cover" src="/2024/09/08/libevent/03_libevent%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B8%8EAPI/2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-08</div><div class="title">3，libevent的核心概念与API</div></div></a></div><div><a href="/2024/09/09/libevent/04.01_libevent%E7%9A%84%E6%97%A5%E5%BF%97%E6%A8%A1%E5%9D%97%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" title="libevent的日志模块基本使用"><img class="cover" src="/2024/09/09/libevent/04.01_libevent%E7%9A%84%E6%97%A5%E5%BF%97%E6%A8%A1%E5%9D%97%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/3.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-09</div><div class="title">libevent的日志模块基本使用</div></div></a></div><div><a href="/2024/09/09/libevent/04.02_libevent%E5%88%9B%E5%BB%BAtcp%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8Etcp%E5%AE%A2%E6%88%B7%E7%AB%AF/" title="04.02_libevent创建tcp服务端与tcp客户端"><img class="cover" src="/2024/09/09/libevent/04.02_libevent%E5%88%9B%E5%BB%BAtcp%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8Etcp%E5%AE%A2%E6%88%B7%E7%AB%AF/3.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-09</div><div class="title">04.02_libevent创建tcp服务端与tcp客户端</div></div></a></div><div><a href="/2024/09/08/libevent/04_libevent%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" title="04_libevent的基本使用"><img class="cover" src="/2024/09/08/libevent/04_libevent%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/3.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-08</div><div class="title">04_libevent的基本使用</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/header_middle.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">xutopia77</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">14</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xutopia77"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xutopia77" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://gitee.com/xutopia" target="_blank" title="Gitee"><i class="fab fa-g"></i></a><a class="social-icon" href="https://www.zhihu.com/people/xutopia77" target="_blank" title="Zhihu"><i class="fab fa-zhihu"></i></a><a class="social-icon" href="https://www.zhihu.com/people/xutopia77" target="_blank" title="Weixin"><i class="fab fa-weixin"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#libevent%E7%9A%84event-base%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">libevent的event_base源码详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#event-base"><span class="toc-number">1.0.1.</span> <span class="toc-text">event_base</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%BA%8B%E4%BB%B6%E5%9F%BA"><span class="toc-number">1.0.1.1.</span> <span class="toc-text">创建事件基</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E5%92%8C%E9%85%8D%E7%BD%AE"><span class="toc-number">1.0.1.2.</span> <span class="toc-text">初始化和配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E4%BA%8B%E4%BB%B6"><span class="toc-number">1.0.1.3.</span> <span class="toc-text">添加事件</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6%E4%BA%8B%E4%BB%B6"><span class="toc-number">1.0.1.3.1.</span> <span class="toc-text">添加文件描述符事件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E5%AE%9A%E6%97%B6%E5%99%A8%E4%BA%8B%E4%BB%B6"><span class="toc-number">1.0.1.3.2.</span> <span class="toc-text">添加定时器事件</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF"><span class="toc-number">1.0.1.4.</span> <span class="toc-text">运行事件循环</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E4%BA%8B%E4%BB%B6%E5%9F%BA"><span class="toc-number">1.0.1.5.</span> <span class="toc-text">管理事件基</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="toc-number">1.0.1.6.</span> <span class="toc-text">示例代码</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/09/09/libevent/05.05_libevent%E7%9A%84%E4%BA%8B%E4%BB%B6%E6%95%B0%E9%87%8F%E5%88%86%E6%9E%90/" title="05_libevent的事件数量分析"><img src="/2024/09/09/libevent/05.05_libevent%E7%9A%84%E4%BA%8B%E4%BB%B6%E6%95%B0%E9%87%8F%E5%88%86%E6%9E%90/2.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="05_libevent的事件数量分析"/></a><div class="content"><a class="title" href="/2024/09/09/libevent/05.05_libevent%E7%9A%84%E4%BA%8B%E4%BB%B6%E6%95%B0%E9%87%8F%E5%88%86%E6%9E%90/" title="05_libevent的事件数量分析">05_libevent的事件数量分析</a><time datetime="2024-09-09T15:17:17.532Z" title="Created 2024-09-09 23:17:17">2024-09-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/09/09/libevent/04.01_libevent%E7%9A%84%E6%97%A5%E5%BF%97%E6%A8%A1%E5%9D%97%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" title="libevent的日志模块基本使用"><img src="/2024/09/09/libevent/04.01_libevent%E7%9A%84%E6%97%A5%E5%BF%97%E6%A8%A1%E5%9D%97%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/3.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="libevent的日志模块基本使用"/></a><div class="content"><a class="title" href="/2024/09/09/libevent/04.01_libevent%E7%9A%84%E6%97%A5%E5%BF%97%E6%A8%A1%E5%9D%97%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" title="libevent的日志模块基本使用">libevent的日志模块基本使用</a><time datetime="2024-09-09T15:17:17.522Z" title="Created 2024-09-09 23:17:17">2024-09-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/09/09/libevent/04.02_libevent%E5%88%9B%E5%BB%BAtcp%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8Etcp%E5%AE%A2%E6%88%B7%E7%AB%AF/" title="04.02_libevent创建tcp服务端与tcp客户端"><img src="/2024/09/09/libevent/04.02_libevent%E5%88%9B%E5%BB%BAtcp%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8Etcp%E5%AE%A2%E6%88%B7%E7%AB%AF/3.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="04.02_libevent创建tcp服务端与tcp客户端"/></a><div class="content"><a class="title" href="/2024/09/09/libevent/04.02_libevent%E5%88%9B%E5%BB%BAtcp%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8Etcp%E5%AE%A2%E6%88%B7%E7%AB%AF/" title="04.02_libevent创建tcp服务端与tcp客户端">04.02_libevent创建tcp服务端与tcp客户端</a><time datetime="2024-09-09T15:17:17.522Z" title="Created 2024-09-09 23:17:17">2024-09-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/09/09/libevent/05.04_libevent%E7%9A%84watch%E6%A8%A1%E5%9D%97%E8%AF%A6%E8%A7%A3/" title="libevent的watch模块详解"><img src="/2024/09/09/libevent/05.04_libevent%E7%9A%84watch%E6%A8%A1%E5%9D%97%E8%AF%A6%E8%A7%A3/2.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="libevent的watch模块详解"/></a><div class="content"><a class="title" href="/2024/09/09/libevent/05.04_libevent%E7%9A%84watch%E6%A8%A1%E5%9D%97%E8%AF%A6%E8%A7%A3/" title="libevent的watch模块详解">libevent的watch模块详解</a><time datetime="2024-09-08T17:32:42.132Z" title="Created 2024-09-09 01:32:42">2024-09-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/09/08/tools/git%E7%9A%84merge%E5%92%8Crebase%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/" title="git的merge和rebase的使用方法"><img src="/2024/09/08/tools/git%E7%9A%84merge%E5%92%8Crebase%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="git的merge和rebase的使用方法"/></a><div class="content"><a class="title" href="/2024/09/08/tools/git%E7%9A%84merge%E5%92%8Crebase%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/" title="git的merge和rebase的使用方法">git的merge和rebase的使用方法</a><time datetime="2024-09-08T15:38:51.822Z" title="Created 2024-09-08 23:38:51">2024-09-08</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/background.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By xutopia77</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
