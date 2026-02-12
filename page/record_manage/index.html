@@ -1,4 +1,527 @@
 <!DOCTYPE html>
-<div>
-  adfsghg
-</div>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Manager - 视频文件智能管理系统</title>
+    <style>
+        :root {
+            --primary-color: #646cff;
+            --secondary-color: #747bff;
+            --background-dark: #121212;
+            --surface-dark: #1e1e1e;
+            --card-dark: #252525;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent-color: #bb86fc;
+            --success-color: #00c853;
+            --warning-color: #ffab00;
+            --danger-color: #cf6679;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--background-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--surface-dark);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 5rem 0;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(100, 108, 255, 0.1), rgba(116, 123, 255, 0.05));
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Features Section */
+        .section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: var(--card-dark);
+            padding: 2rem;
+            border-radius: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .feature-desc {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* System Requirements */
+        .requirements {
+            background: var(--surface-dark);
+            padding: 3rem;
+            border-radius: 12px;
+            margin: 3rem 0;
+        }
+
+        .req-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .req-item {
+            padding: 1.5rem;
+            background: var(--card-dark);
+            border-radius: 8px;
+        }
+
+        .req-title {
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .req-list {
+            list-style: none;
+        }
+
+        .req-list li {
+            padding: 0.3rem 0;
+            color: var(--text-secondary);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .req-list li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-size: 0.8rem;
+        }
+
+        /* Screenshots */
+        .screenshots {
+            margin: 4rem 0;
+        }
+
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .screenshot-item {
+            background: var(--card-dark);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .screenshot-img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .screenshot-caption {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--surface-dark);
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <div class="logo-icon">RM</div>
+                <div class="logo-text">Record Manager</div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#features">功能特性</a></li>
+                    <li><a href="#requirements">系统要求</a></li>
+                    <li><a href="#screenshots">界面预览</a></li>
+                    <li><a href="#download">下载</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>视频文件智能管理系统</h1>
+            <p>专为安防监控视频文件管理而设计的桌面应用程序，提供视频快速检索、智能分类管理、标签标注、关键帧提取与存储等核心功能。</p>
+            <div class="cta-buttons">
+                <a href="#download" class="btn btn-primary">立即下载</a>
+                <a href="#features" class="btn btn-outline">了解更多</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="section">
+        <div class="container">
+            <h2 class="section-title">核心功能</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">▶</div>
+                    <h3 class="feature-title">多媒体播放控制</h3>
+                    <p class="feature-desc">支持标准播放、变速播放、帧精确定位、关键帧预览，满足专业视频审查需求。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🗂️</div>
+                    <h3 class="feature-title">文件生命周期管理</h3>
+                    <p class="feature-desc">视频文件浏览、软删除（回收站机制）、批量操作，实现完整的文件管理流程。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏷️</div>
+                    <h3 class="feature-title">元数据标注系统</h3>
+                    <p class="feature-desc">基于标签和分级的视频内容分类与标记，支持自定义标签体系。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🖼️</div>
+                    <h3 class="feature-title">智能预览生成</h3>
+                    <p class="feature-desc">自动提取视频关键帧、生成缩略图，优化存储空间利用，提升浏览效率。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✂️</div>
+                    <h3 class="feature-title">视频剪辑功能</h3>
+                    <p class="feature-desc">支持视频片段裁剪、合并、分割等非线性编辑操作，保留关键内容。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">批量处理</h3>
+                    <p class="feature-desc">支持多选视频文件进行批量标注、删除、导出等操作，提升工作效率。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="requirements" class="section">
+        <div class="container">
+            <h2 class="section-title">系统要求</h2>
+            <div class="requirements">
+                <div class="req-grid">
+                    <div class="req-item">
+                        <h3 class="req-title">操作系统兼容性</h3>
+                        <ul class="req-list">
+                            <li>Microsoft Windows 10 (64位)</li>
+                            <li>Microsoft Windows 11 (64位)</li>
+                        </ul>
+                    </div>
+                    <div class="req-item">
+                        <h3 class="req-title">硬件要求</h3>
+                        <ul class="req-list">
+                            <li>CPU：双核处理器，主频2.0GHz以上</li>
+                            <li>内存：4GB RAM（推荐8GB）</li>
+                            <li>存储：充足磁盘空间用于视频文件存储</li>
+                        </ul>
+                    </div>
+                    <div class="req-item">
+                        <h3 class="req-title">安装说明</h3>
+                        <ul class="req-list">
+                            <li>绿色免安装部署模式</li>
+                            <li>解压后即可运行</li>
+                            <li>自动创建默认项目配置</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="screenshots" class="screenshots">
+        <div class="container">
+            <h2 class="section-title">界面预览</h2>
+            <div class="screenshot-grid">
+                <div class="screenshot-item">
+                    <img src="1770912390245.jpg" alt="主界面概览" class="screenshot-img">
+                    <div class="screenshot-caption">主界面概览 - 完整的视频管理控制中心</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="download" class="section">
+        <div class="container">
+            <h2 class="section-title">获取软件</h2>
+            <div style="text-align: center; padding: 2rem;">
+                <p style="margin-bottom: 2rem; color: var(--text-secondary); font-size: 1.1rem;">
+                    当前版本：2.2.6 | 发布日期：2026年2月
+                </p>
+                <div class="cta-buttons" style="justify-content: center;">
+                    <a href="#" class="btn btn-primary">下载 Windows 版本</a>
+                    <a href="https://github.com/xutopia77/record_manager.git" class="btn btn-outline" target="_blank">访问开源项目</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Record Manager</h3>
+                    <p>专业的视频文件智能管理系统，专为安防监控视频文件管理而设计。</p>
+                </div>
+                <div class="footer-section">
+                    <h3>快速链接</h3>
+                    <ul class="footer-links">
+                        <li><a href="#features">功能特性</a></li>
+                        <li><a href="#requirements">系统要求</a></li>
+                        <li><a href="#screenshots">界面预览</a></li>
+                        <li><a href="#download">下载中心</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>技术支持</h3>
+                    <ul class="footer-links">
+                        <li><a href="https://github.com/xutopia77/record_manager.git" target="_blank">GitHub 项目</a></li>
+                        <li><a href="#">文档中心</a></li>
+                        <li><a href="#">社区支持</a></li>
+                        <li><a href="#">问题反馈</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 Record Manager. 保留所有权利.</p>
+                <p>本项目遵循开源协议，欢迎贡献代码.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
