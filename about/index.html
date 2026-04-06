@@ -1,0 +1,238 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>关于我 | xutopia77</title><meta name="author" content="xutopia77"><meta name="copyright" content="xutopia77"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="码耕墨耘，技文同行 💻✍️你好，我是 xutopia77，一名横跨底层开发与全栈工程的技术人，也是一名在文字里安放思考的写作者。 在技术的世界里，我以C&#x2F;C++为根基，深耕Linux系统编程、底层网络模型与音视频技术落地，精通WebRTC实时流媒体传输、音视频录制管理与编解码处理；同时具备全栈开发能力，熟练使用TypeScript&#x2F;Go&#x2F;Vue&#x2F;Elect">
+<meta property="og:type" content="website">
+<meta property="og:title" content="关于我">
+<meta property="og:url" content="https://xutopia77.github.io/about/index.html">
+<meta property="og:site_name" content="xutopia77">
+<meta property="og:description" content="码耕墨耘，技文同行 💻✍️你好，我是 xutopia77，一名横跨底层开发与全栈工程的技术人，也是一名在文字里安放思考的写作者。 在技术的世界里，我以C&#x2F;C++为根基，深耕Linux系统编程、底层网络模型与音视频技术落地，精通WebRTC实时流媒体传输、音视频录制管理与编解码处理；同时具备全栈开发能力，熟练使用TypeScript&#x2F;Go&#x2F;Vue&#x2F;Elect">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xutopia77.github.io/images/user_avatar.png">
+<meta property="article:published_time" content="2026-04-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-06T03:37:01.135Z">
+<meta property="article:author" content="xutopia77">
+<meta property="article:tag" content="计算机技术工程师,嵌入式开发,AI大模型,前沿科技,技术博客,文学写作,随笔杂谈,代码实践,系统开发,科技探讨,技术人文">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xutopia77.github.io/images/user_avatar.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/images/user_avatar.png"><link rel="canonical" href="https://xutopia77.github.io/about/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '关于我',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/images/user_avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">xutopia77</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">关于我</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><h1 id="码耕墨耘，技文同行-💻✍️"><a href="#码耕墨耘，技文同行-💻✍️" class="headerlink" title="码耕墨耘，技文同行 💻✍️"></a>码耕墨耘，技文同行 💻✍️</h1><p>你好，我是 xutopia77，一名横跨底层开发与全栈工程的技术人，也是一名在文字里安放思考的写作者。</p>
+<p>在技术的世界里，我以C&#x2F;C++为根基，深耕Linux系统编程、底层网络模型与音视频技术落地，精通WebRTC实时流媒体传输、音视频录制管理与编解码处理；同时具备全栈开发能力，熟练使用TypeScript&#x2F;Go&#x2F;Vue&#x2F;Electron完成从后端服务、前端交互到跨端桌面应用的全链路开发，熟悉数据库设计、微服务架构、分布式系统与高并发场景的方案设计，能从0到1搭建完整的业务系统。</p>
+<p>我也是一名持续探索的AI实践者，专注AI Agent多智能体系统设计、AI工作流搭建与落地，同时探索AI创作与工程场景的结合，始终站在前沿科技的实践一线；作为开源创作者，我在GitHub开源了轻量级C++11序列化工具ormBuf、音视频录制管理组件record_manager等项目，从2021年起便在博客园持续输出技术干货，把工程实践中的踩坑经验、解决方案沉淀成可复用的内容，用代码解决真实的工程问题。</p>
+<p>在代码之外，文字是我与世界对话的另一种方式。我始终相信，技术的理性与人文的感性从来不是对立的两面，于是以笔墨为舟📖，在文学创作、生活随笔与科技思辨中行走，记录那些代码无法完全表达的思考与感悟。</p>
+<p>这个博客，便是我「码耕」与「墨耘」的双重自留地。</p>
+<p>在这里，你会看到：</p>
+<ul>
+<li>🔧 <strong>技术实战</strong>：C&#x2F;C++&#x2F;Go后端开发、Linux系统编程、网络模型、WebRTC流媒体、数据库设计的踩坑记录与干货分享</li>
+<li>🖥️ <strong>全栈开发</strong>：TypeScript&#x2F;Vue&#x2F;Electron前端与跨端开发的实践经验与解决方案</li>
+<li>🏗️ <strong>架构设计</strong>：微服务、分布式系统、高并发处理的架构思考与落地案例</li>
+<li>🤖 <strong>AI探索</strong>：AI Agent、AI工作流、AI创作的实践落地与前沿思考</li>
+<li>📝 <strong>人文随笔</strong>：文学创作、生活感悟与日常思考，在技术之外留一片柔软的角落</li>
+</ul>
+<p>我始终相信，好的技术要落地生根，好的文字要直抵人心。</p>
+<p>如果你对我的内容感兴趣，或是想交流技术、探讨文字，欢迎通过以下方式找到我：</p>
+<ul>
+<li>🏠 个人博客：<a href="https://xutopia77.github.io/">https://xutopia77.github.io</a></li>
+<li>🐙 GitHub：<a target="_blank" rel="noopener" href="https://github.com/xutopia77">https://github.com/xutopia77</a></li>
+<li>📮 邮箱：<a href="mailto:&#120;&#117;&#116;&#x6f;&#112;&#105;&#97;&#x66;&#64;&#103;&#x6d;&#97;&#105;&#108;&#x2e;&#x63;&#x6f;&#109;">xutopiaf@gmail.com</a>  &#x2F;  <a href="mailto:&#49;&#x32;&#x35;&#x36;&#x32;&#x34;&#56;&#x38;&#x33;&#x36;&#64;&#x71;&#113;&#x2e;&#x63;&#x6f;&#109;">1256248836@qq.com</a></li>
+<li>🌐 知乎：<a target="_blank" rel="noopener" href="https://www.zhihu.com/people/xutopia77">https://www.zhihu.com/people/xutopia77</a></li>
+<li>📚 博客园：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/xutopia">https://www.cnblogs.com/xutopia</a></li>
+</ul>
+<h2 id="🚀-开源项目"><a href="#🚀-开源项目" class="headerlink" title="🚀 开源项目"></a>🚀 开源项目</h2><p>我开发了一些实用的开源工具，解决实际工作和生活中的问题：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>简介</th>
+<th>GitHub</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>📹 Record Manager</td>
+<td>安防监控视频文件管理软件，支持视频检索、智能分类、标签标注、关键帧提取</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/xutopia77/record_manager">GitHub</a></td>
+<td><a href="https://xutopia77.github.io/project/record-manager">软件介绍</a></td>
+</tr>
+<tr>
+<td>🖼️ Tidy Time</td>
+<td>图片与视频管理工具，非侵入式设计，支持Web端和桌面端</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/xutopia77/time_capsule">GitHub</a></td>
+<td><a href="https://xutopia77.github.io/project/tidy-time">软件介绍</a></td>
+</tr>
+</tbody></table>
+<p>更多项目详情请访问：<a href="https://xutopia77.github.io/xutopia77-projects.html">项目列表</a></p>
+<p>感谢到访，愿我们在技术与文字的路上，都能步履不停，有所收获✨。</p>
+</div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/images/user_avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xutopia77</div><div class="author-info-description">多领域计算机技术工程师 xutopia77，深耕嵌入式与系统开发、AI 大模型应用及前沿科技实践，同时以文字为舟，在文学写作与科技思辨间行走，分享技术实战、AI 新知、科技洞见与人文随笔。</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xutopia77"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/xutopia77" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.zhihu.com/people/xutopia77" target="_blank" title="Zhihu"><i class="fab fa-zhihu"></i></a><a class="social-icon" href="mailto:xutopiaf@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">见字如面，欢迎来到 xutopia77 的跨界博客｜专注软硬件开发、AI 前沿科技、技术实战与文学随笔分享 ✍️</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/hexo-seo-plugins-guide.html" title="🔌 Hexo博客SEO插件完整指南：提升搜索排名必备工具">🔌 Hexo博客SEO插件完整指南：提升搜索排名必备工具</a><time datetime="2026-04-05T08:30:00.000Z" title="发表于 2026-04-05 16:30:00">2026-04-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/seo-complete-guide-for-hexo-blog.html" title="🔍 SEO超全详解：从基础原理到Hexo博客落地全指南">🔍 SEO超全详解：从基础原理到Hexo博客落地全指南</a><time datetime="2026-04-05T08:00:00.000Z" title="发表于 2026-04-05 16:00:00">2026-04-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/hexo-title-emoji-optimization-guide.html" title="📝 Hexo博客标题加emoji完整指南：一秒提升目录辨识度">📝 Hexo博客标题加emoji完整指南：一秒提升目录辨识度</a><time datetime="2026-04-05T07:30:00.000Z" title="发表于 2026-04-05 15:30:00">2026-04-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/xutopia77-projects.html" title="🚀 xutopia77的开源项目">🚀 xutopia77的开源项目</a><time datetime="2025-12-11T04:28:32.000Z" title="发表于 2025-12-11 12:28:32">2025-12-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/libevent-http-server.html" title="基于libevent的http服务器实现">基于libevent的http服务器实现</a><time datetime="2022-12-11T04:28:32.000Z" title="发表于 2022-12-11 12:28:32">2022-12-11</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/code/"><span class="card-category-list-name">code</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/"><span class="card-category-list-name">博客搭建教程</span><span class="card-category-list-count">3</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/HTTP%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="font-size: 1.3em; color: #99a1ac">HTTP服务器</a> <a href="/tags/%E5%BC%80%E6%BA%90/" style="font-size: 1.1em; color: #999">开源</a> <a href="/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/" style="font-size: 1.1em; color: #999">搜索引擎</a> <a href="/tags/SEO/" style="font-size: 1.3em; color: #99a1ac">SEO</a> <a href="/tags/%E6%8F%92%E4%BB%B6/" style="font-size: 1.1em; color: #999">插件</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 1.1em; color: #999">多线程</a> <a href="/tags/libevent/" style="font-size: 1.3em; color: #99a1ac">libevent</a> <a href="/tags/cplusplus/" style="font-size: 1.3em; color: #99a1ac">cplusplus</a> <a href="/tags/%E5%8D%9A%E5%AE%A2/" style="font-size: 1.5em; color: #99a9bf">博客</a> <a href="/tags/Hexo/" style="font-size: 1.5em; color: #99a9bf">Hexo</a> <a href="/tags/project/" style="font-size: 1.1em; color: #999">project</a> <a href="/tags/Butterfly%E4%B8%BB%E9%A2%98/" style="font-size: 1.1em; color: #999">Butterfly主题</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2022/12/">
+            <span class="card-archive-list-date">
+              十二月 2022
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">6</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-04-06T03:57:13.956Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xutopia77</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
