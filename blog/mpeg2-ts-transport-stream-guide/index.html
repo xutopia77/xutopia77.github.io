@@ -1,0 +1,1411 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>📡 MPEG-2 TS传输流详解：流媒体核心技术完全指南 | xutopia77</title><meta name="author" content="xutopia77"><meta name="copyright" content="xutopia77"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="📡 MPEG-2 TS（Transport Stream）传输流详解一、基本定义与核心定位TS（Transport Stream，传输流） 是MPEG-2标准（ISO&#x2F;IEC 13818-1，MPEG-2 Systems）定义的一种面向不可靠传输环境设计的音视频封装格式，全称为MPEG-2 TS。 核心设计目标：  在有噪声&#x2F;丢包的传输信道（如地面广播、卫星、有线电视、IP网">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📡 MPEG-2 TS传输流详解：流媒体核心技术完全指南">
+<meta property="og:url" content="https://xutopia.top/blog/mpeg2-ts-transport-stream-guide/index.html">
+<meta property="og:site_name" content="xutopia77">
+<meta property="og:description" content="📡 MPEG-2 TS（Transport Stream）传输流详解一、基本定义与核心定位TS（Transport Stream，传输流） 是MPEG-2标准（ISO&#x2F;IEC 13818-1，MPEG-2 Systems）定义的一种面向不可靠传输环境设计的音视频封装格式，全称为MPEG-2 TS。 核心设计目标：  在有噪声&#x2F;丢包的传输信道（如地面广播、卫星、有线电视、IP网">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xutopia.top/images/user_avatar.png">
+<meta property="article:published_time" content="2026-04-08T16:24:00.000Z">
+<meta property="article:modified_time" content="2026-04-21T13:38:55.066Z">
+<meta property="article:author" content="xutopia77">
+<meta property="article:tag" content="音视频技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xutopia.top/images/user_avatar.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "📡 MPEG-2 TS传输流详解：流媒体核心技术完全指南",
+  "url": "https://xutopia.top/blog/mpeg2-ts-transport-stream-guide/",
+  "image": "https://xutopia.top/images/user_avatar.png",
+  "datePublished": "2026-04-08T16:24:00.000Z",
+  "dateModified": "2026-04-21T13:38:55.066Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "xutopia77",
+      "url": "https://xutopia.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/images/user_avatar.png"><link rel="canonical" href="https://xutopia.top/blog/mpeg2-ts-transport-stream-guide/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '📡 MPEG-2 TS传输流详解：流媒体核心技术完全指南',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/images/user_avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">45</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">xutopia77</span></a><a class="nav-page-title" href="/"><span class="site-name">📡 MPEG-2 TS传输流详解：流媒体核心技术完全指南</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">📡 MPEG-2 TS传输流详解：流媒体核心技术完全指南</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-08T16:24:00.000Z" title="发表于 2026-04-09 00:24:00">2026-04-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-21T13:38:55.066Z" title="更新于 2026-04-21 21:38:55">2026-04-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%9F%B3%E8%A7%86%E9%A2%91%E6%8A%80%E6%9C%AF/">音视频技术</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="📡-MPEG-2-TS（Transport-Stream）传输流详解"><a href="#📡-MPEG-2-TS（Transport-Stream）传输流详解" class="headerlink" title="📡 MPEG-2 TS（Transport Stream）传输流详解"></a>📡 MPEG-2 TS（Transport Stream）传输流详解</h1><h2 id="一、基本定义与核心定位"><a href="#一、基本定义与核心定位" class="headerlink" title="一、基本定义与核心定位"></a>一、基本定义与核心定位</h2><p><strong>TS（Transport Stream，传输流）</strong> 是MPEG-2标准（ISO&#x2F;IEC 13818-1，MPEG-2 Systems）定义的一种面向<strong>不可靠传输环境</strong>设计的音视频封装格式，全称为<strong>MPEG-2 TS</strong>。</p>
+<p>核心设计目标：</p>
+<ul>
+<li>在<strong>有噪声&#x2F;丢包的传输信道</strong>（如地面广播、卫星、有线电视、IP网络）中实现<strong>稳定可靠的音视频传输</strong></li>
+<li>支持<strong>多路节目复用</strong>（多套电视节目在同一传输流中）</li>
+<li>提供<strong>强容错能力</strong>和<strong>快速同步恢复</strong>机制</li>
+<li>满足<strong>实时性要求</strong>，适合直播等低延迟场景</li>
+</ul>
+<h2 id="二、TS包详细结构（188字节固定长度）"><a href="#二、TS包详细结构（188字节固定长度）" class="headerlink" title="二、TS包详细结构（188字节固定长度）"></a>二、TS包详细结构（188字节固定长度）</h2><p>TS包是传输的最小单元，理解其结构是掌握TS流的第一步。</p>
+<p>每个TS包结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────┬─────────────────┬─────────────────────┐</span><br><span class="line">│ TS Header   │ Adaptation Field│ Payload (有效载荷)   │</span><br><span class="line">│ (4字节固定) │ (可选，0-184字节)│ (剩余字节)           │</span><br><span class="line">└─────────────┴─────────────────┴─────────────────────┘</span><br><span class="line"></span><br><span class="line">总长度固定188字节：4(Header) + 0~184(AF) + 184~0(Payload)</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-TS包头（4字节，固定）"><a href="#1-TS包头（4字节，固定）" class="headerlink" title="1, TS包头（4字节，固定）"></a>1, TS包头（4字节，固定）</h3><p>TS包头是整个TS系统的”导航灯塔”，结构如下（按位定义）：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位数</th>
+<th>取值&#x2F;含义</th>
+<th>核心作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>同步字节</td>
+<td>8</td>
+<td>固定为<strong>0x47</strong></td>
+<td>标识TS包起始，用于接收端同步</td>
+</tr>
+<tr>
+<td>传输错误指示</td>
+<td>1</td>
+<td>0&#x3D;无错，1&#x3D;有错</td>
+<td>标记包在传输中是否出错，出错包应丢弃</td>
+</tr>
+<tr>
+<td>净荷单元起始指示</td>
+<td>1</td>
+<td>0&#x3D;非起始，1&#x3D;起始</td>
+<td>标记当前包是否为PES包或PSI Section的起始位置</td>
+</tr>
+<tr>
+<td>传输优先级</td>
+<td>1</td>
+<td>0&#x3D;普通，1&#x3D;高优先级</td>
+<td>用于QoS控制，优先传输重要数据</td>
+</tr>
+<tr>
+<td>PID</td>
+<td>13</td>
+<td>0x0000~0x1FFF</td>
+<td><strong>Packet Identifier</strong>，包标识符，用于区分不同流（视频&#x2F;音频&#x2F;PAT&#x2F;PMT等）</td>
+</tr>
+<tr>
+<td>传输加扰控制</td>
+<td>2</td>
+<td>00&#x3D;未加扰，01&#x2F;10&#x2F;11&#x3D;加扰模式</td>
+<td>标识内容是否加密及加密方式</td>
+</tr>
+<tr>
+<td>适配字段控制</td>
+<td>2</td>
+<td>见下表</td>
+<td>指示包中是否包含适配字段和有效载荷</td>
+</tr>
+<tr>
+<td>连续计数器</td>
+<td>4</td>
+<td>0~15循环</td>
+<td>检测包丢失或顺序错误，同一PID的连续包计数器应递增（模16）</td>
+</tr>
+</tbody></table>
+<p><strong>适配字段控制（adaptation_field_control）取值</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>含义</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>00</td>
+<td>保留</td>
+<td>ISO&#x2F;IEC保留，不应使用</td>
+</tr>
+<tr>
+<td><strong>01</strong></td>
+<td><strong>仅有效载荷</strong></td>
+<td>最常见，无适配字段，184字节全部为有效载荷</td>
+</tr>
+<tr>
+<td><strong>10</strong></td>
+<td><strong>仅适配字段</strong></td>
+<td>无有效载荷，用于填充或仅传输PCR</td>
+</tr>
+<tr>
+<td>11</td>
+<td>适配字段+有效载荷</td>
+<td>两者都有，适配字段用于填充+PCR，剩余为有效载荷</td>
+</tr>
+</tbody></table>
+<p><strong>关键PID值（预定义）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>PID</th>
+<th>用途</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x0000</td>
+<td><strong>PAT表</strong></td>
+<td>必选，节目关联表</td>
+</tr>
+<tr>
+<td>0x0001</td>
+<td><strong>CAT表</strong></td>
+<td>条件接收表（有加密节目时存在）</td>
+</tr>
+<tr>
+<td>0x0002</td>
+<td>TSDT表</td>
+<td>传输流描述表</td>
+</tr>
+<tr>
+<td>0x0010</td>
+<td>NIT表</td>
+<td>网络信息表（实际PID由PAT指定，此为DVB默认值）</td>
+</tr>
+<tr>
+<td>0x1FFF</td>
+<td><strong>空包（Null Packet）</strong></td>
+<td>填充用，接收端应直接丢弃</td>
+</tr>
+</tbody></table>
+<h3 id="2-适配字段（Adaptation-Field，可选）"><a href="#2-适配字段（Adaptation-Field，可选）" class="headerlink" title="2. 适配字段（Adaptation Field，可选）"></a>2. 适配字段（Adaptation Field，可选）</h3><p>适配字段主要功能：</p>
+<ul>
+<li>填充数据，确保TS包固定188字节长度（PES数据不足188字节时用填充补齐）</li>
+<li>插入<strong>PCR（Program Clock Reference，节目时钟参考）</strong> 时间戳</li>
+<li>提供其他传输控制信息（如随机访问指示、不连续指示）</li>
+</ul>
+<p>适配字段结构（长度可变，首字节为长度标识）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">┌──────────┬──────────┬──────────┬──────────┬──────────┬──────────┬──────────┐</span><br><span class="line">│ AF长度   │ 标记位   │ PCR      │ OPCR     │ 填充字节 │ ...      │          │</span><br><span class="line">│ (1字节)  │ (1字节)  │ (6字节)  │ (6字节)  │ (可变)   │ (其他)   │          │</span><br><span class="line">│          │          │ (可选)   │ (可选)   │ (可选)   │ (可选)   │          │</span><br><span class="line">└──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┘</span><br><span class="line"></span><br><span class="line">AF长度字段值 = 后续所有字段的总字节数（不含自身）</span><br><span class="line">当仅含AF长度+标记位时，AF长度=0（最小适配字段为2字节：长度+标记位）</span><br></pre></td></tr></table></figure>
+
+<p><strong>标记位（flags，1字节）详细定义</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>位</th>
+<th>字段名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7</td>
+<td>discontinuity_indicator</td>
+<td>1&#x3D;系统时钟不连续或计数器不连续</td>
+</tr>
+<tr>
+<td>6</td>
+<td>random_access_indicator</td>
+<td>1&#x3D;当前包包含随机访问点（如I帧起始）</td>
+</tr>
+<tr>
+<td>5</td>
+<td>elementary_stream_priority_indicator</td>
+<td>1&#x3D;该包中的ES数据为高优先级</td>
+</tr>
+<tr>
+<td>4</td>
+<td>PCR_flag</td>
+<td>1&#x3D;适配字段中包含PCR</td>
+</tr>
+<tr>
+<td>3</td>
+<td>OPCR_flag</td>
+<td>1&#x3D;适配字段中包含OPCR（原始PCR，用于级联复用器）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>splicing_point_flag</td>
+<td>1&#x3D;包含拼接点倒计数</td>
+</tr>
+<tr>
+<td>1</td>
+<td>transport_private_data_flag</td>
+<td>1&#x3D;包含私有数据</td>
+</tr>
+<tr>
+<td>0</td>
+<td>adaptation_field_extension_flag</td>
+<td>1&#x3D;包含适配字段扩展</td>
+</tr>
+</tbody></table>
+<p><strong>PCR的核心作用与精确结构</strong>：</p>
+<p>PCR携带编码端<strong>系统时钟（STC，System Time Clock）</strong> 信息，接收端通过PCR恢复与编码端同步的本地时钟，是PTS&#x2F;DTS时间戳的参考基准。</p>
+<p>PCR由两部分组成，共6字节（48位）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">PCR结构（6字节，48位）：</span><br><span class="line">┌──────────────────────────────────────────┬──────┬──────────┐</span><br><span class="line">│ PCR_base (33位)                          │ 保留 │ PCR_ext  │</span><br><span class="line">│ 基于90kHz时钟                            │ 6位  │ (9位)    │</span><br><span class="line">│                                          │      │ 基于27MHz│</span><br><span class="line">└──────────────────────────────────────────┴──────┴──────────┘</span><br><span class="line"></span><br><span class="line">PCR = PCR_base × 300 + PCR_extension</span><br><span class="line"></span><br><span class="line">PCR_base：33位，基于27MHz时钟÷300 = 90kHz</span><br><span class="line">PCR_extension：9位，基于27MHz时钟的精细部分，范围0~299</span><br><span class="line"></span><br><span class="line">PCR完整精度：27MHz（约37ns分辨率）</span><br><span class="line">PCR_base精度：90kHz（约11.1μs分辨率）</span><br></pre></td></tr></table></figure>
+
+<p><strong>PCR关键参数</strong>：</p>
+<ul>
+<li>系统时钟频率：<strong>27MHz</strong>（±30ppm容差）</li>
+<li>PCR_base精度：90kHz（与PTS&#x2F;DTS同频）</li>
+<li>PCR完整精度：<strong>27MHz</strong>（约37ns分辨率）</li>
+<li>PCR最大间隔：<strong>100ms</strong>（MPEG-2标准要求）</li>
+<li>PCR抖动容限：±500ns（DVB标准）</li>
+</ul>
+<p><strong>PCR时钟恢复原理</strong>：</p>
+<ol>
+<li>编码端以27MHz时钟驱动STC，周期性将当前STC值编码为PCR插入适配字段</li>
+<li>接收端通过锁相环（PLL）或类似算法，将本地27MHz振荡器锁定到PCR</li>
+<li>本地STC与PTS&#x2F;DTS比较，控制解码和显示时机</li>
+<li>PCR间隔不超过100ms，确保时钟不会严重漂移</li>
+</ol>
+<h3 id="3-有效载荷（Payload）"><a href="#3-有效载荷（Payload）" class="headerlink" title="3. 有效载荷（Payload）"></a>3. 有效载荷（Payload）</h3><p>有效载荷携带实际数据，分为两类：</p>
+<ol>
+<li><strong>PES包数据</strong>：音频&#x2F;视频等媒体数据，由PES包分片而来</li>
+<li><strong>PSI&#x2F;SI Section数据</strong>：节目特定信息&#x2F;服务信息，用于描述流结构</li>
+</ol>
+<p><strong>PES包与TS包的映射关系</strong>：</p>
+<ul>
+<li>一个PES包通常包含<strong>一帧完整媒体数据</strong>（如一个I帧、一帧音频）</li>
+<li>一个PES包可被拆分为<strong>多个TS包</strong>传输（因PES包长度可变，通常远大于188字节）</li>
+<li>TS包的<strong>净荷单元起始指示位</strong>（payload_start_indicator）&#x3D;1时，表示当前TS包是一个新PES包的开始</li>
+<li>PES包的第一个字节必须位于TS包有效载荷的第一个字节（payload_start_indicator&#x3D;1时）</li>
+</ul>
+<p><strong>空包（Null Packet）机制</strong>：</p>
+<p>PID&#x3D;0x1FFF的TS包为空包，其有效载荷无意义，核心作用包括：</p>
+<ul>
+<li><strong>维持恒定比特率（CBR）</strong>：TS流通常需要恒定比特率传输（如DVB广播），当有效数据不足时插入空包填充</li>
+<li><strong>复用器速率匹配</strong>：多路节目复用时，各路速率波动，空包用于平滑总比特率</li>
+<li><strong>缓冲管理</strong>：保持解码器缓冲区的恒定输入速率，避免缓冲区下溢或上溢</li>
+</ul>
+<p>空包处理规则：</p>
+<ul>
+<li>接收端应<strong>直接丢弃</strong>空包，不做任何处理</li>
+<li>空包的连续计数器也应递增，但接收端通常不检查</li>
+<li>空包的适配字段控制通常为01（仅有效载荷），有效载荷全为0xFF</li>
+</ul>
+<h2 id="三、分层封装结构（ES→PES→TS）"><a href="#三、分层封装结构（ES→PES→TS）" class="headerlink" title="三、分层封装结构（ES→PES→TS）"></a>三、分层封装结构（ES→PES→TS）</h2><p>在理解TS包结构后，我们来看媒体数据是如何被封装进TS包的。TS流采用三层封装模型，从原始媒体数据到最终传输流的完整链路：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>名称</th>
+<th>英文全称</th>
+<th>核心功能</th>
+<th>数据单元</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>基本流</td>
+<td>Elementary Stream (ES)</td>
+<td>原始压缩媒体数据（H.264&#x2F;HEVC视频，AAC&#x2F;MP3音频）</td>
+<td>编码帧（如I&#x2F;P&#x2F;B帧、音频采样帧）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>分组基本流</td>
+<td>Packetized Elementary Stream (PES)</td>
+<td>为ES添加时间戳、媒体类型标识，分组化</td>
+<td>可变长度PES包（通常包含一帧完整数据）</td>
+</tr>
+<tr>
+<td>3</td>
+<td>传输流</td>
+<td>Transport Stream (TS)</td>
+<td>固定长度打包，添加传输控制信息，支持多节目复用</td>
+<td>固定188字节TS包（可扩展至204字节含FEC）</td>
+</tr>
+</tbody></table>
+<p><strong>封装流程</strong>：原始媒体数据→ES→PES（添加PTS&#x2F;DTS）→TS（固定长度打包+传输控制信息）→传输→解包→PES→ES→解码播放</p>
+<h3 id="PES包详细结构"><a href="#PES包详细结构" class="headerlink" title="PES包详细结构"></a>PES包详细结构</h3><p>PES包是ES和TS之间的中间层，理解其结构对TS流解析至关重要。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────┬──────────────┬──────────────┬──────────────┬───────────────┐</span><br><span class="line">│ PES Header   │ PES Optional │ PTS/DTS      │ 其他可选     │ PES Payload   │</span><br><span class="line">│ (6字节固定)  │ Header        │ (5/10字节)   │ 字段         │ (ES数据)      │</span><br><span class="line">│              │ (可变长度)    │             │              │               │</span><br><span class="line">└──────────────┴──────────────┴──────────────┴──────────────┴───────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>PES包头（6字节固定部分）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位数</th>
+<th>取值&#x2F;含义</th>
+<th>核心作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>起始码前缀</td>
+<td>24</td>
+<td>固定<strong>0x000001</strong></td>
+<td>标识PES包起始，与ES起始码格式一致</td>
+</tr>
+<tr>
+<td><strong>stream_id</strong></td>
+<td>8</td>
+<td>见下表</td>
+<td>标识PES包承载的流类型</td>
+</tr>
+<tr>
+<td>PES包长度</td>
+<td>16</td>
+<td>0~65535</td>
+<td>PES包剩余长度（不含起始码前缀和stream_id），0&#x3D;未指定长度（视频流常用）</td>
+</tr>
+</tbody></table>
+<p><strong>stream_id关键取值</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>stream_id</th>
+<th>流类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0xE0</td>
+<td>视频流（MPEG-1&#x2F;2&#x2F;4&#x2F;H.264&#x2F;HEVC）</td>
+</tr>
+<tr>
+<td>0xC0</td>
+<td>音频流（MPEG-1&#x2F;2&#x2F;AAC）</td>
+</tr>
+<tr>
+<td>0xBD</td>
+<td>私有流1（AC-3&#x2F;DTS音频、字幕等）</td>
+</tr>
+<tr>
+<td>0xBE</td>
+<td>私有流2</td>
+</tr>
+<tr>
+<td>0xBC</td>
+<td>program_stream_map</td>
+</tr>
+<tr>
+<td>0xFF</td>
+<td>program_stream_directory</td>
+</tr>
+</tbody></table>
+<p><strong>PES可选头（可变长度）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位数</th>
+<th>核心作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2位标记</td>
+<td>2</td>
+<td>固定’10’，标识MPEG-2 PES</td>
+</tr>
+<tr>
+<td>PES加扰控制</td>
+<td>2</td>
+<td>标识PES层加扰方式</td>
+</tr>
+<tr>
+<td>PES优先级</td>
+<td>1</td>
+<td>0&#x3D;普通，1&#x3D;高优先级</td>
+</tr>
+<tr>
+<td>数据对齐指示</td>
+<td>1</td>
+<td>1&#x3D;有效载荷从对齐点开始</td>
+</tr>
+<tr>
+<td>版权</td>
+<td>1</td>
+<td>1&#x3D;有版权</td>
+</tr>
+<tr>
+<td>原始或拷贝</td>
+<td>1</td>
+<td>1&#x3D;原始数据</td>
+</tr>
+<tr>
+<td><strong>PTS_DTS_flags</strong></td>
+<td>2</td>
+<td>00&#x3D;无PTS&#x2F;DTS，01&#x3D;禁止，10&#x3D;仅有PTS，11&#x3D;PTS+DTS</td>
+</tr>
+<tr>
+<td>ESCR标志</td>
+<td>1</td>
+<td>1&#x3D;存在ESCR（ES时钟参考）</td>
+</tr>
+<tr>
+<td>ES速率标志</td>
+<td>1</td>
+<td>1&#x3D;存在ES速率</td>
+</tr>
+<tr>
+<td>DSM特技模式</td>
+<td>1</td>
+<td>1&#x3D;存在DSM特技模式信息</td>
+</tr>
+<tr>
+<td>附加复制信息</td>
+<td>1</td>
+<td>1&#x3D;存在附加复制信息</td>
+</tr>
+<tr>
+<td>CRC标志</td>
+<td>1</td>
+<td>1&#x3D;存在PES CRC</td>
+</tr>
+<tr>
+<td>扩展标志</td>
+<td>1</td>
+<td>1&#x3D;存在PES扩展</td>
+</tr>
+<tr>
+<td>PES头数据长度</td>
+<td>8</td>
+<td>后续可选字段的总字节数</td>
+</tr>
+</tbody></table>
+<p><strong>PTS&#x2F;DTS编码格式（33位时间戳）</strong>：</p>
+<p>PTS和DTS都是33位值，基于90kHz时钟，编码时分散存储在5字节中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PTS编码（5字节，33位有效）：</span><br><span class="line">  4位标记 &#x27;0010&#x27; | PTS[32..30] | 1位标记 &#x27;1&#x27; | PTS[29..15] | 1位标记 &#x27;1&#x27; | PTS[14..0] | 1位标记 &#x27;1&#x27;</span><br><span class="line"></span><br><span class="line">DTS编码（5字节，33位有效）：</span><br><span class="line">  4位标记 &#x27;0001&#x27; | DTS[32..30] | 1位标记 &#x27;1&#x27; | DTS[29..15] | 1位标记 &#x27;1&#x27; | DTS[14..0] | 1位标记 &#x27;1&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>33位时间戳的取值范围：0 ~ 2^33-1 &#x3D; 8589934591<br>在90kHz时钟下，最大表示时间：8589934591 &#x2F; 90000 ≈ 95443秒 ≈ 26.5小时<br>超过此范围后时间戳回绕（wrap around），接收端需要处理回绕逻辑。</p>
+<p><strong>ES流映射到PES的规则</strong>：</p>
+<ul>
+<li>视频ES：每个访问单元（Access Unit，即一个编码帧）封装为一个PES包，I帧起始的PES包的payload_start_indicator&#x3D;1</li>
+<li>音频ES：每个音频帧封装为一个PES包</li>
+<li>PES包长度：视频流通常设为0（未指定），音频流通常指定具体长度</li>
+</ul>
+<h2 id="四、PSI-SI表系统（节目导航核心）"><a href="#四、PSI-SI表系统（节目导航核心）" class="headerlink" title="四、PSI&#x2F;SI表系统（节目导航核心）"></a>四、PSI&#x2F;SI表系统（节目导航核心）</h2><p>PSI（Program Specific Information，节目特定信息）和SI（Service Information，服务信息）是TS流的”导航系统”，使接收端能够正确识别和解析多路节目。</p>
+<h3 id="1-PSI-Section分段机制"><a href="#1-PSI-Section分段机制" class="headerlink" title="1. PSI Section分段机制"></a>1. PSI Section分段机制</h3><p>PSI表不是直接放入TS包的，而是通过<strong>Section（段）</strong> 机制分段传输，这是理解PSI解析的关键前提。</p>
+<p><strong>Section结构</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────┬──────────────┬──────────────┬──────────────┬──────────────┐</span><br><span class="line">│ table_id     │ section_     │ 版本/当前    │ section_     │ Section      │</span><br><span class="line">│ (1字节)      │ syntax_      │ 下一个指示   │ number/      │ 数据         │</span><br><span class="line">│              │ indicator    │              │ last_section │              │</span><br><span class="line">│              │ + section_   │              │ number       │              │</span><br><span class="line">│              │ length       │              │              │              │</span><br><span class="line">│              │ (2字节)      │              │              │              │</span><br><span class="line">└──────────────┴──────────────┴──────────────┴──────────────┴──────────────┘</span><br><span class="line">                                                                    + CRC32</span><br></pre></td></tr></table></figure>
+
+<p><strong>Section关键特性</strong>：</p>
+<ul>
+<li>Section长度可变，最大<strong>1024字节</strong>（PSI Section）或<strong>4096字节</strong>（private Section）</li>
+<li>一个Section可能<strong>跨多个TS包</strong>传输（Section长度&gt;TS包有效载荷时）</li>
+<li>一个TS包的有效载荷中也可能<strong>包含多个Section</strong>（Section较短时）</li>
+<li>Section末尾有<strong>CRC32校验</strong>（4字节），用于验证Section完整性</li>
+<li>Section通过<strong>版本号机制</strong>（version_number，5位，0~31循环）标识表是否更新</li>
+</ul>
+<p><strong>Section与TS包的映射规则</strong>：</p>
+<ul>
+<li>当payload_start_indicator&#x3D;1时，TS包有效载荷的第一个字节为<strong>pointer_field</strong>（1字节），指示Section数据起始的偏移量</li>
+<li>pointer_field&#x3D;0表示Section数据紧跟pointer_field之后</li>
+<li>pointer_field&gt;0表示pointer_field后有若干填充字节，然后才是Section数据</li>
+</ul>
+<h3 id="2-核心PSI表"><a href="#2-核心PSI表" class="headerlink" title="2. 核心PSI表"></a>2. 核心PSI表</h3><table>
+<thead>
+<tr>
+<th>表名</th>
+<th>英文全称</th>
+<th>PID</th>
+<th>table_id</th>
+<th>核心功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PAT</td>
+<td>Program Association Table</td>
+<td>0x0000</td>
+<td>0x00</td>
+<td>节目关联表，列出所有节目及其对应的PMT PID</td>
+</tr>
+<tr>
+<td>PMT</td>
+<td>Program Map Table</td>
+<td>可变（由PAT指定）</td>
+<td>0x02</td>
+<td>节目映射表，列出特定节目的所有组件（视频PID、音频PID、字幕PID等）及对应的编码类型</td>
+</tr>
+<tr>
+<td>CAT</td>
+<td>Conditional Access Table</td>
+<td>0x0001</td>
+<td>0x01</td>
+<td>条件接收表，描述加密系统信息（如CAS系统、EMM PID）</td>
+</tr>
+<tr>
+<td>TSDT</td>
+<td>TS Description Table</td>
+<td>0x0002</td>
+<td>0x03</td>
+<td>传输流描述表，提供TS流的整体信息</td>
+</tr>
+</tbody></table>
+<p><strong>PAT表详细结构</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">PAT Section:</span><br><span class="line">┌──────────┬──────────┬──────────┬──────────┬──────────┬──────────┬──────────┐</span><br><span class="line">│ table_id │ section_ │ transport│ version/ │ section_ │ 节目列表 │ CRC32    │</span><br><span class="line">│ =0x00    │ length   │ _stream_ │ current_ │ number/  │ (循环)   │ (4字节)  │</span><br><span class="line">│ (1字节)  │ (2字节)  │ id       │ next     │ last_    │          │          │</span><br><span class="line">│          │          │ (2字节)  │ (1字节)  │ section  │          │          │</span><br><span class="line">└──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┘</span><br><span class="line"></span><br><span class="line">节目列表每项4字节：</span><br><span class="line">┌──────────────────────┬──────────────────────┐</span><br><span class="line">│ program_number       │ PMT PID / NIT PID    │</span><br><span class="line">│ (2字节)              │ (13位PID + 3位保留)  │</span><br><span class="line">└──────────────────────┴──────────────────────┘</span><br><span class="line">  program_number=0 → 该PID指向NIT</span><br><span class="line">  program_number≠0 → 该PID指向对应节目的PMT</span><br></pre></td></tr></table></figure>
+
+<p><strong>PMT表详细结构</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">PMT Section:</span><br><span class="line">┌──────────┬──────────┬──────────┬──────────┬──────────┬──────────┬──────────┬──────────┐</span><br><span class="line">│ table_id │ section_ │ program_ │ version/ │ PCR_PID  │ 节目描述 │ 基本流   │ CRC32    │</span><br><span class="line">│ =0x02    │ length   │ number   │ current_ │ (13位)   │ (可变)   │ 列表     │ (4字节)  │</span><br><span class="line">│ (1字节)  │ (2字节)  │ (2字节)  │ next     │          │          │ (循环)   │          │</span><br><span class="line">└──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┴──────────┘</span><br><span class="line"></span><br><span class="line">基本流列表每项：</span><br><span class="line">┌──────────┬──────────┬──────────┬──────────┐</span><br><span class="line">│ stream_  │ 基本流   │ ES信息   │          │</span><br><span class="line">│ type     │ PID      │ (可变)   │          │</span><br><span class="line">│ (1字节)  │ (13位)   │          │          │</span><br><span class="line">└──────────┴──────────┴──────────┴──────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>stream_type关键取值</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>stream_type</th>
+<th>编码格式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x01</td>
+<td>MPEG-1 Video</td>
+<td></td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>MPEG-2 Video</td>
+<td></td>
+</tr>
+<tr>
+<td>0x03</td>
+<td>MPEG-1 Audio</td>
+<td></td>
+</tr>
+<tr>
+<td>0x04</td>
+<td>MPEG-2 Audio</td>
+<td></td>
+</tr>
+<tr>
+<td>0x1B</td>
+<td>H.264&#x2F;AVC Video</td>
+<td>最常见的高清编码</td>
+</tr>
+<tr>
+<td>0x24</td>
+<td>HEVC&#x2F;H.265 Video</td>
+<td>4K&#x2F;UHD编码</td>
+</tr>
+<tr>
+<td>0x0F</td>
+<td>AAC Audio</td>
+<td></td>
+</tr>
+<tr>
+<td>0x06</td>
+<td>PES私有数据</td>
+<td>字幕、AC-3&#x2F;DTS音频等</td>
+</tr>
+<tr>
+<td>0x81</td>
+<td>AC-3 Audio</td>
+<td>ATSC标准</td>
+</tr>
+</tbody></table>
+<p><strong>PAT→PMT→音视频流的导航流程</strong>：</p>
+<ol>
+<li>接收端首先解析PID&#x3D;0x0000的PAT表，获取所有节目号及对应PMT的PID</li>
+<li>根据节目号找到对应的PMT PID，解析PMT表</li>
+<li>从PMT中获取当前节目所有媒体流的PID（视频PID、音频PID等）和编码格式（stream_type）</li>
+<li>从PMT中获取PCR_PID，用于时钟恢复</li>
+<li>筛选出对应PID的TS包，重组为PES包，解码播放</li>
+</ol>
+<p><strong>PSI表版本更新机制</strong>：</p>
+<ul>
+<li>每个PSI Section都有version_number（5位，0~31循环）</li>
+<li>当表内容发生变化时，version_number递增1（模32）</li>
+<li>current_next_indicator&#x3D;1表示当前生效，&#x3D;0表示预发布（下一版本生效）</li>
+<li>接收端应持续监测PAT&#x2F;PMT的版本号变化，及时更新节目映射关系</li>
+</ul>
+<h3 id="2-5-PAT-PMT-的数量、位置与周期性发送"><a href="#2-5-PAT-PMT-的数量、位置与周期性发送" class="headerlink" title="2.5 PAT&#x2F;PMT 的数量、位置与周期性发送"></a>2.5 PAT&#x2F;PMT 的数量、位置与周期性发送</h3><h4 id="PAT-表"><a href="#PAT-表" class="headerlink" title="PAT 表"></a>PAT 表</h4><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>数量</strong></td>
+<td>通常 <strong>1 个</strong>，PID 固定为 0x0000</td>
+</tr>
+<tr>
+<td><strong>内容</strong></td>
+<td>列出当前 TS 流中所有节目号及其对应的 PMT PID</td>
+</tr>
+<tr>
+<td><strong>内容变化时</strong></td>
+<td>版本号递增，但 PID 始终为 0x0000</td>
+</tr>
+</tbody></table>
+<h4 id="PMT-表"><a href="#PMT-表" class="headerlink" title="PMT 表"></a>PMT 表</h4><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>数量</strong></td>
+<td>每个节目 <strong>1 个</strong> PMT 表</td>
+</tr>
+<tr>
+<td><strong>PID</strong></td>
+<td>不固定，由 PAT 表指定（如 0x0100、0x0200 等）</td>
+</tr>
+<tr>
+<td><strong>内容</strong></td>
+<td>描述该节目的所有组件：视频 PID、音频 PID、字幕 PID、PCR PID、stream_type 等</td>
+</tr>
+</tbody></table>
+<p><strong>举例</strong>：一个 TS 流有 100 个频道（节目），则有：</p>
+<ul>
+<li>1 个 PAT 表（PID &#x3D; 0x0000）</li>
+<li>100 个 PMT 表（PID 各不相同，如 0x0100、0x0200、…、0x6300）</li>
+</ul>
+<h4 id="周期性发送机制"><a href="#周期性发送机制" class="headerlink" title="周期性发送机制"></a>周期性发送机制</h4><p>PAT&#x2F;PMT <strong>不是单独存放，而是分散在整个 TS 流中周期性循环发送</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">TS流持续发送示例（时间轴从左到右）：</span><br><span class="line">┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐</span><br><span class="line">│ PAT包   │ 音视频包 │ PMT包1  │ 音视频包 │ 音视频包 │ PMT包2  │ 音视频包 │ PAT包   │</span><br><span class="line">│(PID=0)  │         │(PID=x) │         │         │(PID=y)  │         │(PID=0)  │</span><br><span class="line">└─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘</span><br><span class="line">   ↑                        ↑                        ↑                        ↑</span><br><span class="line">   └────────────────────────同一PAT表的重复发送（周期性）────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键机制</strong>：</p>
+<ol>
+<li><strong>PSI Section 封装</strong> — PAT&#x2F;PMT 数据以 Section 形式封装，可跨多个 TS 包传输</li>
+<li><strong>多 Section 复用</strong> — 同一 PID 的 TS 包有效载荷可能包含多个 Section（通过 <code>pointer_field</code> 区分）</li>
+<li><strong>周期性发送</strong> — 发送间隔通常 100ms~1s，确保接收端能快速获取</li>
+<li><strong>接收端解析流程</strong>：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 找到 PID=0x0000 的 TS 包 → 解析 PAT → 获取所有 PMT PID</span><br><span class="line">2. 根据 PMT PID 找到各节目的 PMT 表 → 获取视频/音频/字幕 PID</span><br><span class="line">3. 开始接收对应 PID 的音视频 TS 包</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><strong>一个 Section 可能跨多个 TS 包</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PES包数据（很大）→ 被分割成多个TS包：</span><br><span class="line">┌─────────┬─────────┬─────────┬─────────┬─────────┐</span><br><span class="line">│ TS包1   │ TS包2   │ TS包3   │ TS包4   │ TS包5   │</span><br><span class="line">│ PUSI=1  │ PUSI=0  │ PUSI=0  │ PUSI=0  │ PUSI=0  │</span><br><span class="line">│ Section │ Section │ Section │ Section │ Section │</span><br><span class="line">│ Part 1  │ Part 2  │ Part 3  │ Part 4  │ Part 5  │</span><br><span class="line">└─────────┴─────────┴─────────┴─────────┴─────────┘</span><br><span class="line">   ↑</span><br><span class="line">   payload_unit_start_indicator=1 表示新Section开始</span><br></pre></td></tr></table></figure>
+
+<p><strong>一个 TS 包可能包含多个 Section</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">单个TS包有效载荷（短Section紧凑排列）：</span><br><span class="line">┌────────┬─────────────────┬────────┬─────────────────┐</span><br><span class="line">│Pointer│ Section 1 Header │ Data 1 │ Section 2 ...   │</span><br><span class="line">│Field  │ (table_id=0x00) │        │ (同一PID下一个) │</span><br><span class="line">└────────┴─────────────────┴────────┴─────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h4 id="实际查看-PSI-结构"><a href="#实际查看-PSI-结构" class="headerlink" title="实际查看 PSI 结构"></a>实际查看 PSI 结构</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用 tsduck 查看 PSI 信息</span></span><br><span class="line">tsinfo input.ts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 FFprobe 查看节目信息</span></span><br><span class="line">ffprobe -show_programs input.ts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 详细解析 PSI 表</span></span><br><span class="line">tsdump input.ts</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-SI表（扩展信息）"><a href="#3-SI表（扩展信息）" class="headerlink" title="3. SI表（扩展信息）"></a>3. SI表（扩展信息）</h3><p>SI表提供额外的服务信息，主要用于数字电视广播（DVB标准定义）：</p>
+<table>
+<thead>
+<tr>
+<th>表名</th>
+<th>英文全称</th>
+<th>PID</th>
+<th>核心功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NIT</td>
+<td>Network Information Table</td>
+<td>0x0010（DVB默认）</td>
+<td>描述传输网络参数（频点、调制方式等）</td>
+</tr>
+<tr>
+<td>SDT</td>
+<td>Service Description Table</td>
+<td>0x0011</td>
+<td>提供节目名称、类型、运行状态等信息</td>
+</tr>
+<tr>
+<td>EIT</td>
+<td>Event Information Table</td>
+<td>0x0012</td>
+<td>提供节目单、当前&#x2F;后续节目信息（EPG数据源）</td>
+</tr>
+<tr>
+<td>TDT</td>
+<td>Time and Date Table</td>
+<td>0x0014</td>
+<td>提供当前UTC时间和日期</td>
+</tr>
+<tr>
+<td>TOT</td>
+<td>Time Offset Table</td>
+<td>0x0014</td>
+<td>提供本地时间偏移信息</td>
+</tr>
+<tr>
+<td>BAT</td>
+<td>Bouquet Association Table</td>
+<td>0x0011</td>
+<td>节目组关联表，运营商节目包划分</td>
+</tr>
+</tbody></table>
+<h3 id="4-条件接收（CA）与加扰机制"><a href="#4-条件接收（CA）与加扰机制" class="headerlink" title="4. 条件接收（CA）与加扰机制"></a>4. 条件接收（CA）与加扰机制</h3><p>条件接收系统（CAS，Conditional Access System）是TS流中实现付费电视、内容保护的核心机制。</p>
+<p><strong>加扰与加密的区别</strong>：</p>
+<ul>
+<li><strong>加扰（Scrambling）</strong>：对音视频内容本身进行扰乱处理，使未授权用户无法正常观看，使用<strong>控制字（CW，Control Word）</strong> 作为密钥</li>
+<li><strong>加密（Encryption）</strong>：对CW进行加密传输，确保只有授权用户能获取CW，使用业务密钥（SK）加密</li>
+</ul>
+<p><strong>CAS系统工作流程</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">编码端：</span><br><span class="line">  原始音视频 → 加扰器（使用CW） → 加扰后的TS流 → 复用器 → 传输</span><br><span class="line"></span><br><span class="line">  CW（控制字，通常64位） → 加密器（使用SK） → ECM（Entitlement Control Message）</span><br><span class="line">  授权信息 → 加密器（使用PDK） → EMM（Entitlement Management Message）</span><br><span class="line"></span><br><span class="line">  ECM流 → 分配PID（由PMT中CA描述符指定） → 复用到TS流</span><br><span class="line">  EMM流 → 分配PID（由CAT表指定） → 复用到TS流</span><br><span class="line"></span><br><span class="line">接收端：</span><br><span class="line">  TS流 → 解复用 → 提取ECM/EMM → 智能卡</span><br><span class="line">  智能卡：EMM（用PDK解密）→ 获取授权 → ECM（用SK解密）→ 获取CW</span><br><span class="line">  CW → 解扰器 → 原始音视频 → 解码播放</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键概念</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>全称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CW</td>
+<td>Control Word</td>
+<td>控制字，加扰&#x2F;解扰的直接密钥，通常64位，每隔5~20秒更换一次</td>
+</tr>
+<tr>
+<td>SK</td>
+<td>Service Key</td>
+<td>业务密钥，用于加密CW，按频道&#x2F;节目包分配</td>
+</tr>
+<tr>
+<td>PDK</td>
+<td>Personal Distribution Key</td>
+<td>个人分配密钥，用于加密EMM，每张智能卡唯一</td>
+</tr>
+<tr>
+<td>ECM</td>
+<td>Entitlement Control Message</td>
+<td>授权控制消息，携带加密后的CW和访问条件，周期性发送</td>
+</tr>
+<tr>
+<td>EMM</td>
+<td>Entitlement Management Message</td>
+<td>授权管理消息，携带用户授权信息，周期性发送</td>
+</tr>
+</tbody></table>
+<p><strong>CAT表的作用</strong>：</p>
+<ul>
+<li>PID&#x3D;0x0001，列出TS流中使用的所有CAS系统</li>
+<li>每个CA描述符包含：CA_system_ID（标识CAS厂商）、EMM PID（该系统的EMM流PID）</li>
+<li>接收端根据CAT找到对应CAS系统的EMM PID，提取EMM数据</li>
+</ul>
+<p><strong>PMT中的CA描述符</strong>：</p>
+<ul>
+<li>PMT的节目级和ES级均可包含CA描述符</li>
+<li>节目级CA描述符：整个节目的ECM PID</li>
+<li>ES级CA描述符：特定基本流的ECM PID</li>
+</ul>
+<h2 id="五、时间同步机制（PCR-PTS-DTS）"><a href="#五、时间同步机制（PCR-PTS-DTS）" class="headerlink" title="五、时间同步机制（PCR+PTS+DTS）"></a>五、时间同步机制（PCR+PTS+DTS）</h2><p>TS流通过三层时间戳机制确保<strong>精准音视频同步</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>时间戳</th>
+<th>英文全称</th>
+<th>位置</th>
+<th>作用</th>
+<th>精度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PCR</td>
+<td>Program Clock Reference</td>
+<td>TS适配字段</td>
+<td>恢复系统时钟，作为PTS&#x2F;DTS的时间基准</td>
+<td><strong>27MHz</strong>（base为90kHz，ext为27MHz精细部分）</td>
+</tr>
+<tr>
+<td>PTS</td>
+<td>Presentation Time Stamp</td>
+<td>PES包头</td>
+<td>指示媒体帧<strong>应该何时呈现</strong>（显示&#x2F;播放）给用户</td>
+<td>90kHz</td>
+</tr>
+<tr>
+<td>DTS</td>
+<td>Decoding Time Stamp</td>
+<td>PES包头</td>
+<td>指示媒体帧<strong>应该何时解码</strong>（仅视频B帧需要，I&#x2F;P帧PTS&#x3D;DTS）</td>
+<td>90kHz</td>
+</tr>
+</tbody></table>
+<p><strong>同步原理</strong>：</p>
+<ol>
+<li><p>编码端：</p>
+<ul>
+<li>所有时间戳基于同一<strong>系统时钟（STC，27MHz）</strong> 生成</li>
+<li>PCR &#x3D; STC当前值（27MHz精度）</li>
+<li>PTS&#x2F;DTS &#x3D; STC当前值 ÷ 300（转换为90kHz精度，33位编码）</li>
+<li>视频I&#x2F;P&#x2F;B帧需要PTS和DTS（B帧解码顺序与显示顺序不同）</li>
+<li>音频帧通常只需要PTS（解码后立即播放）</li>
+</ul>
+</li>
+<li><p>接收端：</p>
+<ul>
+<li>通过PCR恢复本地STC（27MHz），与编码端保持同步</li>
+<li>本地STC ÷ 300 得到90kHz时钟，与PTS&#x2F;DTS比较</li>
+<li>当本地STC ÷ 300 ≥ PTS时，显示该帧</li>
+<li>当本地STC ÷ 300 ≥ DTS时，解码该帧</li>
+<li>即使部分包丢失，也能通过下一个PCR快速重新同步</li>
+</ul>
+</li>
+</ol>
+<p><strong>PTS&#x2F;DTS与B帧的关系</strong>：</p>
+<p>视频编码中，B帧的解码顺序与显示顺序不同，导致DTS和PTS值不同：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">显示顺序：I  B  B  P  B  B  P  B  B  P</span><br><span class="line">PTS值：    0  2  3  5  7  8  10 12 13 15</span><br><span class="line"></span><br><span class="line">解码顺序：I  P  B  B  P  B  B  P  B  B</span><br><span class="line">DTS值：    0  3  1  2  6  4  5  9  7  8</span><br><span class="line"></span><br><span class="line">说明：编码器先编码I帧和P帧（作为B帧的参考帧），再编码B帧</span><br><span class="line">      因此P帧的DTS（3）早于其PTS（5），中间的B帧DTS（1,2）在其后</span><br></pre></td></tr></table></figure>
+
+<p><strong>时间戳回绕（Wrap Around）处理</strong>：</p>
+<ul>
+<li>PTS&#x2F;DTS为33位无符号整数，最大值2^33-1</li>
+<li>在90kHz时钟下，约26.5小时回绕一次</li>
+<li>接收端必须处理回绕：当新时间戳与旧时间戳差值超过2^32时，判定为回绕</li>
+</ul>
+<h2 id="六、TS流比特率与速率控制"><a href="#六、TS流比特率与速率控制" class="headerlink" title="六、TS流比特率与速率控制"></a>六、TS流比特率与速率控制</h2><h3 id="1-比特率计算"><a href="#1-比特率计算" class="headerlink" title="1. 比特率计算"></a>1. 比特率计算</h3><p>TS流的比特率可通过多种方式确定：</p>
+<p><strong>通过PCR计算</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">比特率 = (TS包数 × 188 × 8) / (PCR差值 / 27000000)</span><br><span class="line"></span><br><span class="line">其中：</span><br><span class="line">  TS包数 = 两个PCR之间的TS包总数（含空包）</span><br><span class="line">  PCR差值 = 后一个PCR值 - 前一个PCR值（27MHz单位）</span><br><span class="line">  27000000 = 27MHz时钟频率</span><br></pre></td></tr></table></figure>
+
+<p><strong>通过TS头信息</strong>：</p>
+<ul>
+<li>适配字段中可选的transport_rate字段直接指示比特率</li>
+<li>但该字段在实际TS流中很少使用</li>
+</ul>
+<h3 id="2-CBR与VBR"><a href="#2-CBR与VBR" class="headerlink" title="2. CBR与VBR"></a>2. CBR与VBR</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>CBR（恒定比特率）</th>
+<th>VBR（可变比特率）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>比特率</td>
+<td>恒定不变</td>
+<td>随内容复杂度变化</td>
+</tr>
+<tr>
+<td>空包使用</td>
+<td>大量使用空包填充</td>
+<td>较少使用空包</td>
+</tr>
+<tr>
+<td>典型场景</td>
+<td>数字电视广播（DVB&#x2F;ATSC）</td>
+<td>IPTV、网络直播</td>
+</tr>
+<tr>
+<td>带宽利用</td>
+<td>效率较低（简单场景浪费带宽）</td>
+<td>效率较高（按需分配）</td>
+</tr>
+<tr>
+<td>缓冲管理</td>
+<td>简单（恒定输入速率）</td>
+<td>复杂（需处理速率波动）</td>
+</tr>
+<tr>
+<td>复用</td>
+<td>简单（固定时隙分配）</td>
+<td>复杂（统计复用）</td>
+</tr>
+</tbody></table>
+<p><strong>统计复用（Statistical Multiplexing）</strong>：</p>
+<ul>
+<li>多路VBR节目共享固定带宽</li>
+<li>复用器根据各路节目的瞬时复杂度动态分配比特率</li>
+<li>复杂场景（运动剧烈）的节目分配更多带宽，简单场景分配较少</li>
+<li>整体带宽利用率显著高于固定时隙分配</li>
+</ul>
+<h3 id="3-缓冲区模型"><a href="#3-缓冲区模型" class="headerlink" title="3. 缓冲区模型"></a>3. 缓冲区模型</h3><p>MPEG-2标准定义了<strong>T-STD（Transport Stream System Target Decoder）</strong> 缓冲区模型，用于规定解码器的缓冲行为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">传输 → 传输缓冲区(TB) → 基本流缓冲区(EB) → 解码器 → 显示</span><br><span class="line">        (512字节)        (可变大小)</span><br><span class="line"></span><br><span class="line">关键参数：</span><br><span class="line">  TB大小：512字节（所有流共用）</span><br><span class="line">  EB大小：由profile/level决定（视频通常几Mbit，音频通常几Kbit）</span><br><span class="line">  缓冲区上溢：输入速率过快，需通过PCR控制</span><br><span class="line">  缓冲区下溢：输入速率过慢，需插入空包维持</span><br></pre></td></tr></table></figure>
+
+<h2 id="七、关键特性与优势"><a href="#七、关键特性与优势" class="headerlink" title="七、关键特性与优势"></a>七、关键特性与优势</h2><h3 id="1-固定长度包结构（188字节）"><a href="#1-固定长度包结构（188字节）" class="headerlink" title="1. 固定长度包结构（188字节）"></a>1. 固定长度包结构（188字节）</h3><ul>
+<li>最核心特性，使接收端<strong>易于同步和错误检测</strong></li>
+<li>丢包后仅影响单个包，不破坏整个流结构</li>
+<li>便于硬件实现和高速处理</li>
+<li>扩展版本：204字节（188+16字节FEC前向纠错码），进一步提升抗干扰能力</li>
+</ul>
+<h3 id="2-强容错与恢复能力"><a href="#2-强容错与恢复能力" class="headerlink" title="2. 强容错与恢复能力"></a>2. 强容错与恢复能力</h3><ul>
+<li>每个TS包独立可识别（同步字节0x47），即使流中出现错误也能快速重新同步</li>
+<li>连续计数器检测包丢失或顺序错误</li>
+<li>适配字段中的discontinuity指示帮助接收端处理流中断情况</li>
+<li>CRC32校验确保PSI Section的完整性</li>
+</ul>
+<h3 id="3-多节目复用能力"><a href="#3-多节目复用能力" class="headerlink" title="3. 多节目复用能力"></a>3. 多节目复用能力</h3><ul>
+<li>单TS流可承载<strong>多个独立节目</strong>（如多套电视频道）</li>
+<li>每个节目有独立的PMT表，通过PID区分不同节目组件</li>
+<li>支持动态添加&#x2F;移除节目（如数字电视中的频道切换）</li>
+<li>统计复用优化带宽利用率</li>
+</ul>
+<h3 id="4-灵活的传输控制"><a href="#4-灵活的传输控制" class="headerlink" title="4. 灵活的传输控制"></a>4. 灵活的传输控制</h3><ul>
+<li>PID机制实现<strong>精准流识别</strong>，可灵活选择需要的节目组件</li>
+<li>适配字段提供丰富的传输控制信息</li>
+<li>支持条件接收（加密），通过CAT表和EMM&#x2F;ECM流实现付费内容管理</li>
+</ul>
+<h3 id="5-实时性保障"><a href="#5-实时性保障" class="headerlink" title="5. 实时性保障"></a>5. 实时性保障</h3><ul>
+<li>固定包结构和高效解析流程，适合低延迟场景</li>
+<li>PCR间隔通常不超过<strong>100ms</strong>，确保快速时钟同步</li>
+<li>适合直播、视频会议等实时应用</li>
+</ul>
+<h2 id="八、与PS流及其他容器格式的对比"><a href="#八、与PS流及其他容器格式的对比" class="headerlink" title="八、与PS流及其他容器格式的对比"></a>八、与PS流及其他容器格式的对比</h2><h3 id="1-与PS流（Program-Stream）的核心区别"><a href="#1-与PS流（Program-Stream）的核心区别" class="headerlink" title="1. 与PS流（Program Stream）的核心区别"></a>1. 与PS流（Program Stream）的核心区别</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>TS流（Transport Stream）</th>
+<th>PS流（Program Stream）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>包长度</td>
+<td><strong>固定188字节</strong></td>
+<td>可变长度（通常较大）</td>
+</tr>
+<tr>
+<td>应用场景</td>
+<td><strong>实时传输</strong>（广播、IPTV、直播）</td>
+<td><strong>存储介质</strong>（DVD、蓝光、本地文件）</td>
+</tr>
+<tr>
+<td>容错能力</td>
+<td><strong>强</strong>，适合不可靠信道</td>
+<td>弱，适合无错误环境</td>
+</tr>
+<tr>
+<td>节目支持</td>
+<td>支持<strong>多路节目复用</strong></td>
+<td>通常用于<strong>单路节目</strong></td>
+</tr>
+<tr>
+<td>同步恢复</td>
+<td>快速（基于同步字节和PCR）</td>
+<td>较慢（依赖完整包结构）</td>
+</tr>
+<tr>
+<td>典型应用</td>
+<td>DVB、ATSC、IPTV、HLS切片、RTSP直播</td>
+<td>DVD视频、本地媒体文件</td>
+</tr>
+</tbody></table>
+<h3 id="2-PS流（Program-Stream）详解"><a href="#2-PS流（Program-Stream）详解" class="headerlink" title="2. PS流（Program Stream）详解"></a>2. PS流（Program Stream）详解</h3><p>PS 流是 MPEG-2 标准的另一核心封装格式，与 TS 流同属 MPEG-2 系统层，但设计目标截然不同。</p>
+<h4 id="2-1-核心定位与设计目标"><a href="#2-1-核心定位与设计目标" class="headerlink" title="2.1 核心定位与设计目标"></a>2.1 核心定位与设计目标</h4><p><strong>PS（Program Stream，节目流）</strong> 是 MPEG-2 标准（ISO&#x2F;IEC 13818-1，MPEG-2 Systems）定义的面向<strong>可靠传输环境</strong>设计的音视频封装格式。</p>
+<p>核心设计目标：</p>
+<ul>
+<li>在<strong>无错误&#x2F;低错误环境</strong>（如光盘、硬盘、本地文件）中实现音视频同步播放</li>
+<li>为<strong>单路节目</strong>提供高效的封装和存储方案</li>
+<li>简化解码器设计，无需复杂同步恢复机制</li>
+<li>支持<strong>本地媒体文件的随机访问</strong>（快进、快退、定位播放）</li>
+</ul>
+<h4 id="2-2-PS包结构（可变长度）"><a href="#2-2-PS包结构（可变长度）" class="headerlink" title="2.2 PS包结构（可变长度）"></a>2.2 PS包结构（可变长度）</h4><p>PS 包是 PS 流的基本单元，与 TS 包的固定 188 字节不同，PS 包长度<strong>可变</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────┬──────────────┬──────────────┬──────────────┐</span><br><span class="line">│ PS Header    │ PES Packet   │ PES Packet   │ ...          │</span><br><span class="line">│ (14字节固定) │ (可变长度)   │ (可变长度)   │              │</span><br><span class="line">└──────────────┴──────────────┴──────────────┴──────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>PS包头（14字节固定部分）</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位数</th>
+<th>取值&#x2F;含义</th>
+<th>核心作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>起始码</td>
+<td>32</td>
+<td>固定<strong>0x000001BA</strong></td>
+<td>标识PS包起始</td>
+</tr>
+<tr>
+<td>系统时钟参考（SCR）</td>
+<td>33</td>
+<td>33位值</td>
+<td>恢复系统时钟，与TS的PCR类似但位置不同</td>
+</tr>
+<tr>
+<td>SCR扩展</td>
+<td>9</td>
+<td>9位值</td>
+<td>SCR的精细部分，基于27MHz时钟</td>
+</tr>
+<tr>
+<td>节目 multiplexer rate</td>
+<td>22</td>
+<td>22位值</td>
+<td>指示比特率（字节&#x2F;秒）</td>
+</tr>
+<tr>
+<td>保留</td>
+<td>5</td>
+<td>-</td>
+<td>填充</td>
+</tr>
+<tr>
+<td>PS头数据长度</td>
+<td>8</td>
+<td>后续可选字段的总字节数</td>
+<td>标识可选字段长度</td>
+</tr>
+</tbody></table>
+<p><strong>SCR（System Clock Reference）结构</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SCR结构（6字节，42位）：</span><br><span class="line">┌────────────────────────────────┬──────────┬──────────────────┐</span><br><span class="line">│ SCR_base (33位)                │ 保留    │ SCR_extension   │</span><br><span class="line">│ 基于90kHz时钟                   │ 6位     │ (9位)            │</span><br><span class="line">│                                │         │ 基于27MHz时钟    │</span><br><span class="line">└────────────────────────────────┴──────────┴──────────────────┘</span><br><span class="line"></span><br><span class="line">SCR = SCR_base × 300 + SCR_extension</span><br></pre></td></tr></table></figure>
+
+<p>SCR_base 精度为 90kHz，SCR_extension 精度为 27MHz，<strong>与 PCR 的时钟恢复机制完全一致</strong>，但 SCR 位于 PS 包头而非适配字段中。</p>
+<h4 id="2-3-ES→PES→PS封装流程"><a href="#2-3-ES→PES→PS封装流程" class="headerlink" title="2.3 ES→PES→PS封装流程"></a>2.3 ES→PES→PS封装流程</h4><p>PS 流的封装链路与 TS 流完全相同：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">原始媒体数据 → ES（编码帧） → PES（添加PTS/DTS） → PS（可变长度打包+ SCR）</span><br></pre></td></tr></table></figure>
+
+<p><strong>与 TS 流的核心封装差异</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>TS流</th>
+<th>PS流</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>打包长度</td>
+<td>固定188字节</td>
+<td>可变长度</td>
+</tr>
+<tr>
+<td>传输控制信息位置</td>
+<td>适配字段（Adaptation Field）</td>
+<td>PS包头（SCR）</td>
+</tr>
+<tr>
+<td>多节目支持</td>
+<td>原生支持多节目复用</td>
+<td>通常单节目</td>
+</tr>
+<tr>
+<td>最小封装单元</td>
+<td>TS包（188字节）</td>
+<td>PS包（可变）</td>
+</tr>
+</tbody></table>
+<h4 id="2-4-适用场景"><a href="#2-4-适用场景" class="headerlink" title="2.4 适用场景"></a>2.4 适用场景</h4><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>格式</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DVD视频</td>
+<td><strong>PS</strong></td>
+<td>光盘读取错误率低，PS可变长度更高效，适合本地存储和随机访问</td>
+</tr>
+<tr>
+<td>蓝光光盘</td>
+<td><strong>PS</strong>（BD-ROM）</td>
+<td>同上，蓝光标准基于MPEG-2 PS衍生的BDAV格式</td>
+</tr>
+<tr>
+<td>数字广播电视</td>
+<td><strong>TS</strong></td>
+<td>广播信道有噪声&#x2F;丢包，TS的固定包长和强容错是必要特性</td>
+</tr>
+<tr>
+<td>IPTV</td>
+<td><strong>TS</strong></td>
+<td>IP网络传输不可靠，TS的快速同步恢复是关键</td>
+</tr>
+<tr>
+<td>HLS直播</td>
+<td><strong>TS</strong></td>
+<td>HLS基于TS切片，兼容广播级传输需求</td>
+</tr>
+<tr>
+<td>本地文件播放</td>
+<td><strong>PS</strong> 或 <strong>MP4</strong></td>
+<td>无传输错误，PS的随机访问和高效存储更合适</td>
+</tr>
+<tr>
+<td>视频点播（VOD）</td>
+<td><strong>MP4</strong>（HLS&#x2F;DASH）</td>
+<td>MP4的moov atom元数据支持偏移播放，HLS&#x2F;DASH基于TS切片</td>
+</tr>
+</tbody></table>
+<h4 id="2-5-何时选TS、何时选PS"><a href="#2-5-何时选TS、何时选PS" class="headerlink" title="2.5 何时选TS、何时选PS"></a>2.5 何时选TS、何时选PS</h4><p><strong>选择 TS 流的情况</strong>：</p>
+<ul>
+<li>传输环境有噪声、丢包、或需要强容错</li>
+<li>直播、广播、IPTV等实时传输场景</li>
+<li>需要多路节目复用（多套电视频道）</li>
+<li>带宽资源有限，需要高效同步恢复</li>
+</ul>
+<p><strong>选择 PS 流的情况</strong>：</p>
+<ul>
+<li>存储介质无传输错误（光盘、硬盘）</li>
+<li>单路节目封装，本地播放为主</li>
+<li>需要高效的随机访问能力</li>
+<li>追求更低的封装开销（无可变长度打包浪费）</li>
+</ul>
+<p><strong>实际混合场景</strong>：<br>有些系统会混合使用——例如 DVD 中的视频是 PS 封装，但其中的字幕、菜单等数据可能使用 TS 封装思路设计。在广播电视的前端编码中，也常将 PS 录制内容转换为 TS 进行传输。</p>
+<h3 id="3-与其他常见容器格式的对比"><a href="#3-与其他常见容器格式的对比" class="headerlink" title="3. 与其他常见容器格式的对比"></a>3. 与其他常见容器格式的对比</h3><p>| 特性 | TS | PS | MP4 | FLV | MKV |<br>|——|—–|—–|—–|—–|<br>| 包&#x2F;单元长度 | 固定188字节 | 可变（Atom&#x2F;Box结构） | 可变（Tag结构） | 可变（EBML结构） |<br>| 实时性 | <strong>强</strong>（流式解析） | 弱（依赖moov atom） | 中（流式但延迟较高） | 弱（需索引） |<br>| 容错能力 | <strong>强</strong>（独立包） | 弱（atom损坏影响全局） | 中 | 弱 |<br>| 多节目复用 | <strong>原生支持</strong> | 不支持 | 不支持 | 不支持 |<br>| 时间戳精度 | 90kHz（PTS&#x2F;DTS）+ 27MHz（PCR） | 1ms（通常） | 1ms | 1ms |<br>| 元数据 | PSI&#x2F;SI表 | moov atom | script tag | EBML header |<br>| 加密&#x2F;DRM | CAS&#x2F;条件接收 | FairPlay&#x2F;Widevine | 不原生支持 | 不原生支持 |<br>| 适用场景 | 广播&#x2F;直播&#x2F;传输 | 点播&#x2F;存储&#x2F;下载 | 直播（旧平台） | 存储&#x2F;归档 |<br>| 标准组织 | ISO&#x2F;IEC (MPEG-2) | ISO&#x2F;IEC (MPEG-4) | Adobe | Matroska |</p>
+<p><strong>MP4的moov atom问题</strong>：<br>MP4文件的元数据（moov atom）通常位于文件末尾，播放器必须下载整个moov atom才能开始播放。对于点播场景，可通过<code>qt-faststart</code>等工具将moov atom移至文件头部实现快速启动，但本质上MP4不适合实时流式传输。</p>
+<p><strong>FLV的局限性</strong>：<br>FLV曾是网络直播的主流格式，但存在以下问题：不支持HEVC&#x2F;H.265（需扩展）、时间戳精度有限、不支持多节目、Adobe已停止维护。目前逐步被HLS+TS&#x2F;CMAF替代。</p>
+<h2 id="九、典型应用场景"><a href="#九、典型应用场景" class="headerlink" title="九、典型应用场景"></a>九、典型应用场景</h2><ol>
+<li><strong>数字电视广播</strong>：DVB（欧洲）、ATSC（北美）、ISDB（日本）等标准的核心传输格式</li>
+<li><strong>IPTV</strong>：基于IP网络的电视服务，广泛采用TS流作为传输格式</li>
+<li><strong>视频直播</strong>：<ul>
+<li>网络直播平台的直播流封装</li>
+<li>HLS（HTTP Live Streaming）协议的<strong>ts切片文件</strong>（HLS将TS流分割为2~10秒的小文件）</li>
+<li>RTSP&#x2F;RTP直播的常用封装格式</li>
+</ul>
+</li>
+<li><strong>监控系统</strong>：安防摄像头、NVR等设备的视频传输和存储</li>
+<li><strong>卫星传输</strong>：高抗干扰要求的卫星电视广播</li>
+<li><strong>有线电视</strong>：数字有线电视网络的标准传输格式</li>
+</ol>
+<h3 id="TS-over-IP-RTP封装"><a href="#TS-over-IP-RTP封装" class="headerlink" title="TS over IP &#x2F; RTP封装"></a>TS over IP &#x2F; RTP封装</h3><p>在实际开发中，TS流通过IP网络传输是非常常见的场景，RFC 2250定义了RTP承载MPEG-2 TS的标准。</p>
+<p><strong>RTP+TS封装格式</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────┬──────────────┬──────────────┬─────┬──────────────┐</span><br><span class="line">│ IP Header    │ UDP Header   │ RTP Header   │ ... │ TS Packets   │</span><br><span class="line">│ (20字节)     │ (8字节)      │ (12字节)     │     │ (N×188字节)  │</span><br><span class="line">└──────────────┴──────────────┴──────────────┴─────┴──────────────┘</span><br><span class="line"></span><br><span class="line">RTP Payload：通常包含7个TS包（7×188=1316字节）</span><br><span class="line">  原因：1316 + 12(RTP) + 8(UDP) + 20(IP) = 1356字节 &lt; 1500字节(MTU)</span><br><span class="line">  避免IP分片，确保传输效率</span><br></pre></td></tr></table></figure>
+
+<p><strong>RTP头中的关键信息</strong>：</p>
+<ul>
+<li>RTP序号：检测丢包和排序</li>
+<li>RTP时间戳：基于90kHz时钟（与PTS同频），指示第一个TS包的发送时间</li>
+<li>M标记位：通常不用（RFC 2250未定义特殊含义）</li>
+</ul>
+<p><strong>TS over IP的MTU考虑</strong>：</p>
+<ul>
+<li>以太网MTU&#x3D;1500字节，扣除IP+UDP+RTP头后，有效载荷最大约1460字节</li>
+<li>7个TS包&#x3D;1316字节，是最常见的打包数量</li>
+<li>8个TS包&#x3D;1504字节，超过MTU，会触发IP分片，应避免</li>
+<li>在MTU更大的网络（如jumbo frame）中，可打包更多TS包</li>
+</ul>
+<p><strong>TS over UDP vs TS over TCP</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>UDP</th>
+<th>TCP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>延迟</td>
+<td>低</td>
+<td>高（重传机制）</td>
+</tr>
+<tr>
+<td>可靠性</td>
+<td>不保证</td>
+<td>保证</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>实时直播</td>
+<td>文件传输、VOD</td>
+</tr>
+<tr>
+<td>典型协议</td>
+<td>RTP&#x2F;UDP</td>
+<td>HTTP&#x2F;TCP（HLS）</td>
+</tr>
+</tbody></table>
+<h2 id="十、C-流媒体开发关键要点"><a href="#十、C-流媒体开发关键要点" class="headerlink" title="十、C++流媒体开发关键要点"></a>十、C++流媒体开发关键要点</h2><h3 id="1-TS包解析流程（接收端）"><a href="#1-TS包解析流程（接收端）" class="headerlink" title="1. TS包解析流程（接收端）"></a>1. TS包解析流程（接收端）</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">parse_ts_packet</span><span class="params">(<span class="type">uint8_t</span>* ts_packet)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ts_packet[<span class="number">0</span>] != <span class="number">0x47</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">bool</span> transport_error = (ts_packet[<span class="number">1</span>] &amp; <span class="number">0x80</span>) != <span class="number">0</span>;</span><br><span class="line">    <span class="type">bool</span> payload_start = (ts_packet[<span class="number">1</span>] &amp; <span class="number">0x40</span>) != <span class="number">0</span>;</span><br><span class="line">    <span class="type">bool</span> priority = (ts_packet[<span class="number">1</span>] &amp; <span class="number">0x20</span>) != <span class="number">0</span>;</span><br><span class="line">    <span class="type">uint16_t</span> pid = ((ts_packet[<span class="number">1</span>] &amp; <span class="number">0x1F</span>) &lt;&lt; <span class="number">8</span>) | ts_packet[<span class="number">2</span>];</span><br><span class="line">    <span class="type">uint8_t</span> scrambling_control = (ts_packet[<span class="number">3</span>] &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x03</span>;</span><br><span class="line">    <span class="type">uint8_t</span> adaptation_field_control = (ts_packet[<span class="number">3</span>] &gt;&gt; <span class="number">4</span>) &amp; <span class="number">0x03</span>;</span><br><span class="line">    <span class="type">uint8_t</span> continuity_counter = ts_packet[<span class="number">3</span>] &amp; <span class="number">0x0F</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (transport_error) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">0x1FFF</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> pos = <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">if</span> (adaptation_field_control &amp; <span class="number">0x02</span>) &#123;</span><br><span class="line">        <span class="type">uint8_t</span> af_length = ts_packet[pos++];</span><br><span class="line">        <span class="keyword">if</span> (af_length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="type">uint8_t</span> flags = ts_packet[pos];</span><br><span class="line">            <span class="keyword">if</span> (flags &amp; <span class="number">0x10</span>) &#123;</span><br><span class="line">                <span class="type">uint64_t</span> pcr_base = ((<span class="type">uint64_t</span>)(ts_packet[pos + <span class="number">1</span>]) &lt;&lt; <span class="number">25</span>) |</span><br><span class="line">                                    ((<span class="type">uint64_t</span>)(ts_packet[pos + <span class="number">2</span>]) &lt;&lt; <span class="number">17</span>) |</span><br><span class="line">                                    ((<span class="type">uint64_t</span>)(ts_packet[pos + <span class="number">3</span>]) &lt;&lt; <span class="number">9</span>) |</span><br><span class="line">                                    ((<span class="type">uint64_t</span>)(ts_packet[pos + <span class="number">4</span>]) &lt;&lt; <span class="number">1</span>) |</span><br><span class="line">                                    ((ts_packet[pos + <span class="number">5</span>] &gt;&gt; <span class="number">7</span>) &amp; <span class="number">0x01</span>);</span><br><span class="line">                <span class="type">uint16_t</span> pcr_ext = (((ts_packet[pos + <span class="number">5</span>] &amp; <span class="number">0x01</span>) &lt;&lt; <span class="number">8</span>) |</span><br><span class="line">                                    ts_packet[pos + <span class="number">6</span>]);</span><br><span class="line">                <span class="type">uint64_t</span> pcr = pcr_base * <span class="number">300</span> + pcr_ext;</span><br><span class="line">                <span class="built_in">update_system_clock</span>(pcr);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        pos += af_length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (adaptation_field_control &amp; <span class="number">0x01</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (pid == <span class="number">0x0000</span>) &#123;</span><br><span class="line">            <span class="built_in">parse_pat</span>(ts_packet + pos, <span class="number">188</span> - pos, payload_start);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">is_pmt_pid</span>(pid)) &#123;</span><br><span class="line">            <span class="built_in">parse_pmt</span>(ts_packet + pos, <span class="number">188</span> - pos, payload_start);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">is_video_pid</span>(pid) || <span class="built_in">is_audio_pid</span>(pid)) &#123;</span><br><span class="line">            <span class="built_in">add_to_pes_buffer</span>(pid, ts_packet + pos, <span class="number">188</span> - pos, payload_start);</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">is_pes_complete</span>(pid)) &#123;</span><br><span class="line">                PesPacket* pes = <span class="built_in">get_complete_pes</span>(pid);</span><br><span class="line">                <span class="built_in">decode_pes</span>(pes);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-PAT-PMT解析"><a href="#2-PAT-PMT解析" class="headerlink" title="2. PAT&#x2F;PMT解析"></a>2. PAT&#x2F;PMT解析</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">ProgramInfo</span> &#123;</span><br><span class="line">    <span class="type">uint16_t</span> program_number;</span><br><span class="line">    <span class="type">uint16_t</span> pmt_pid;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">StreamInfo</span> &#123;</span><br><span class="line">    <span class="type">uint8_t</span> stream_type;</span><br><span class="line">    <span class="type">uint16_t</span> elementary_pid;</span><br><span class="line">    std::vector&lt;<span class="type">uint8_t</span>&gt; es_info;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">std::vector&lt;ProgramInfo&gt; program_map;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">parse_pat</span><span class="params">(<span class="type">uint8_t</span>* data, <span class="type">int</span> length, <span class="type">bool</span> payload_start)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> offset = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (payload_start) &#123;</span><br><span class="line">        <span class="type">uint8_t</span> pointer_field = data[offset++];</span><br><span class="line">        offset += pointer_field;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> table_id = data[offset++];</span><br><span class="line">    <span class="keyword">if</span> (table_id != <span class="number">0x00</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">uint16_t</span> section_length = ((data[offset] &amp; <span class="number">0x0F</span>) &lt;&lt; <span class="number">8</span>) | data[offset + <span class="number">1</span>];</span><br><span class="line">    offset += <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">uint16_t</span> transport_stream_id = (data[offset] &lt;&lt; <span class="number">8</span>) | data[offset + <span class="number">1</span>];</span><br><span class="line">    offset += <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> version_number = (data[offset] &gt;&gt; <span class="number">1</span>) &amp; <span class="number">0x1F</span>;</span><br><span class="line">    <span class="type">bool</span> current_next = data[offset] &amp; <span class="number">0x01</span>;</span><br><span class="line">    offset++;</span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> section_number = data[offset++];</span><br><span class="line">    <span class="type">uint8_t</span> last_section_number = data[offset++];</span><br><span class="line"></span><br><span class="line">    program_map.<span class="built_in">clear</span>();</span><br><span class="line">    <span class="type">int</span> program_data_end = offset + section_length - <span class="number">5</span> - <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">while</span> (offset &lt; program_data_end) &#123;</span><br><span class="line">        ProgramInfo info;</span><br><span class="line">        info.program_number = (data[offset] &lt;&lt; <span class="number">8</span>) | data[offset + <span class="number">1</span>];</span><br><span class="line">        info.pmt_pid = ((data[offset + <span class="number">2</span>] &amp; <span class="number">0x1F</span>) &lt;&lt; <span class="number">8</span>) | data[offset + <span class="number">3</span>];</span><br><span class="line">        offset += <span class="number">4</span>;</span><br><span class="line">        <span class="keyword">if</span> (info.program_number != <span class="number">0</span>) &#123;</span><br><span class="line">            program_map.<span class="built_in">push_back</span>(info);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">parse_pmt</span><span class="params">(<span class="type">uint8_t</span>* data, <span class="type">int</span> length, <span class="type">bool</span> payload_start)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> offset = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (payload_start) &#123;</span><br><span class="line">        <span class="type">uint8_t</span> pointer_field = data[offset++];</span><br><span class="line">        offset += pointer_field;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> table_id = data[offset++];</span><br><span class="line">    <span class="keyword">if</span> (table_id != <span class="number">0x02</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">uint16_t</span> section_length = ((data[offset] &amp; <span class="number">0x0F</span>) &lt;&lt; <span class="number">8</span>) | data[offset + <span class="number">1</span>];</span><br><span class="line">    offset += <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">uint16_t</span> program_number = (data[offset] &lt;&lt; <span class="number">8</span>) | data[offset + <span class="number">1</span>];</span><br><span class="line">    offset += <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> version_number = (data[offset] &gt;&gt; <span class="number">1</span>) &amp; <span class="number">0x1F</span>;</span><br><span class="line">    offset++;</span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> section_number = data[offset++];</span><br><span class="line">    <span class="type">uint8_t</span> last_section_number = data[offset++];</span><br><span class="line"></span><br><span class="line">    <span class="type">uint16_t</span> pcr_pid = ((data[offset] &amp; <span class="number">0x1F</span>) &lt;&lt; <span class="number">8</span>) | data[offset + <span class="number">1</span>];</span><br><span class="line">    offset += <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">uint16_t</span> program_info_length = ((data[offset] &amp; <span class="number">0x0F</span>) &lt;&lt; <span class="number">8</span>) | data[offset + <span class="number">1</span>];</span><br><span class="line">    offset += <span class="number">2</span> + program_info_length;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> stream_end = offset + section_length - <span class="number">9</span> - <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">while</span> (offset &lt; stream_end) &#123;</span><br><span class="line">        StreamInfo si;</span><br><span class="line">        si.stream_type = data[offset++];</span><br><span class="line">        si.elementary_pid = ((data[offset] &amp; <span class="number">0x1F</span>) &lt;&lt; <span class="number">8</span>) | data[offset + <span class="number">1</span>];</span><br><span class="line">        offset += <span class="number">2</span>;</span><br><span class="line">        <span class="type">uint16_t</span> es_info_length = ((data[offset] &amp; <span class="number">0x0F</span>) &lt;&lt; <span class="number">8</span>) | data[offset + <span class="number">1</span>];</span><br><span class="line">        offset += <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (es_info_length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            si.es_info.<span class="built_in">assign</span>(data + offset, data + offset + es_info_length);</span><br><span class="line">            offset += es_info_length;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-PES重组状态机"><a href="#3-PES重组状态机" class="headerlink" title="3. PES重组状态机"></a>3. PES重组状态机</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum class</span> <span class="title class_">PesState</span> &#123; WAITING_START, COLLECTING, COMPLETE &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">PesBuffer</span> &#123;</span><br><span class="line">    PesState state = PesState::WAITING_START;</span><br><span class="line">    std::vector&lt;<span class="type">uint8_t</span>&gt; data;</span><br><span class="line">    <span class="type">uint16_t</span> expected_length = <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">std::map&lt;<span class="type">uint16_t</span>, PesBuffer&gt; pes_buffers;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">add_to_pes_buffer</span><span class="params">(<span class="type">uint16_t</span> pid, <span class="type">uint8_t</span>* data, <span class="type">int</span> length, <span class="type">bool</span> payload_start)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">auto</span>&amp; buf = pes_buffers[pid];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (payload_start) &#123;</span><br><span class="line">        <span class="keyword">if</span> (buf.state == PesState::COLLECTING &amp;&amp; buf.data.<span class="built_in">size</span>() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">process_complete_pes</span>(pid, buf.data);</span><br><span class="line">        &#125;</span><br><span class="line">        buf.data.<span class="built_in">clear</span>();</span><br><span class="line">        buf.state = PesState::COLLECTING;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (length &gt;= <span class="number">6</span>) &#123;</span><br><span class="line">            <span class="type">uint8_t</span> stream_id = data[<span class="number">3</span>];</span><br><span class="line">            buf.expected_length = ((data[<span class="number">4</span>] &lt;&lt; <span class="number">8</span>) | data[<span class="number">5</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (buf.state == PesState::COLLECTING) &#123;</span><br><span class="line">        buf.data.<span class="built_in">insert</span>(buf.data.<span class="built_in">end</span>(), data, data + length);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (buf.expected_length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="type">uint16_t</span> pes_payload_size = buf.expected_length + <span class="number">3</span>;</span><br><span class="line">            <span class="keyword">if</span> (buf.data.<span class="built_in">size</span>() &gt;= pes_payload_size + <span class="number">6</span>) &#123;</span><br><span class="line">                buf.state = PesState::COMPLETE;</span><br><span class="line">                <span class="built_in">process_complete_pes</span>(pid, buf.data);</span><br><span class="line">                buf.data.<span class="built_in">clear</span>();</span><br><span class="line">                buf.state = PesState::WAITING_START;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">process_complete_pes</span><span class="params">(<span class="type">uint16_t</span> pid, <span class="type">const</span> std::vector&lt;<span class="type">uint8_t</span>&gt;&amp; pes_data)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (pes_data.<span class="built_in">size</span>() &lt; <span class="number">9</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> stream_id = pes_data[<span class="number">3</span>];</span><br><span class="line">    <span class="type">uint16_t</span> pes_packet_length = (pes_data[<span class="number">4</span>] &lt;&lt; <span class="number">8</span>) | pes_data[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> pts_dts_flags = (pes_data[<span class="number">7</span>] &gt;&gt; <span class="number">6</span>) &amp; <span class="number">0x03</span>;</span><br><span class="line">    <span class="type">uint8_t</span> pes_header_data_length = pes_data[<span class="number">8</span>];</span><br><span class="line"></span><br><span class="line">    <span class="type">int64_t</span> pts = <span class="number">-1</span>, dts = <span class="number">-1</span>;</span><br><span class="line">    <span class="type">int</span> offset = <span class="number">9</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pts_dts_flags &gt;= <span class="number">2</span>) &#123;</span><br><span class="line">        pts = ((<span class="type">int64_t</span>)(pes_data[offset] &amp; <span class="number">0x0E</span>) &lt;&lt; <span class="number">29</span>) |</span><br><span class="line">              ((<span class="type">int64_t</span>)pes_data[offset + <span class="number">1</span>] &lt;&lt; <span class="number">22</span>) |</span><br><span class="line">              ((<span class="type">int64_t</span>)(pes_data[offset + <span class="number">2</span>] &amp; <span class="number">0xFE</span>) &lt;&lt; <span class="number">14</span>) |</span><br><span class="line">              ((<span class="type">int64_t</span>)pes_data[offset + <span class="number">3</span>] &lt;&lt; <span class="number">7</span>) |</span><br><span class="line">              ((<span class="type">int64_t</span>)(pes_data[offset + <span class="number">4</span>] &amp; <span class="number">0xFE</span>) &gt;&gt; <span class="number">1</span>);</span><br><span class="line">        offset += <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (pts_dts_flags == <span class="number">3</span>) &#123;</span><br><span class="line">            dts = ((<span class="type">int64_t</span>)(pes_data[offset] &amp; <span class="number">0x0E</span>) &lt;&lt; <span class="number">29</span>) |</span><br><span class="line">                  ((<span class="type">int64_t</span>)pes_data[offset + <span class="number">1</span>] &lt;&lt; <span class="number">22</span>) |</span><br><span class="line">                  ((<span class="type">int64_t</span>)(pes_data[offset + <span class="number">2</span>] &amp; <span class="number">0xFE</span>) &lt;&lt; <span class="number">14</span>) |</span><br><span class="line">                  ((<span class="type">int64_t</span>)pes_data[offset + <span class="number">3</span>] &lt;&lt; <span class="number">7</span>) |</span><br><span class="line">                  ((<span class="type">int64_t</span>)(pes_data[offset + <span class="number">4</span>] &amp; <span class="number">0xFE</span>) &gt;&gt; <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> es_data_offset = <span class="number">9</span> + pes_header_data_length;</span><br><span class="line">    <span class="type">int</span> es_data_length = pes_data.<span class="built_in">size</span>() - es_data_offset;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">decode_es</span>(pid, stream_id, pts, dts, pes_data.<span class="built_in">data</span>() + es_data_offset, es_data_length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-同步恢复机制"><a href="#4-同步恢复机制" class="headerlink" title="4. 同步恢复机制"></a>4. 同步恢复机制</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SYNC_BYTE 0x47</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TS_PACKET_SIZE 188</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">find_sync_byte</span><span class="params">(<span class="type">uint8_t</span>* buffer, <span class="type">int</span> length)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= length - TS_PACKET_SIZE; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (buffer[i] == SYNC_BYTE) &#123;</span><br><span class="line">            <span class="type">bool</span> sync_ok = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">1</span>; j &lt; <span class="number">4</span> &amp;&amp; sync_ok; j++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (i + j * TS_PACKET_SIZE &lt; length) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (buffer[i + j * TS_PACKET_SIZE] != SYNC_BYTE) &#123;</span><br><span class="line">                        sync_ok = <span class="literal">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (sync_ok) <span class="keyword">return</span> i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">check_continuity</span><span class="params">(<span class="type">uint16_t</span> pid, <span class="type">uint8_t</span> new_cc)</span> </span>&#123;</span><br><span class="line">    <span class="type">static</span> std::map&lt;<span class="type">uint16_t</span>, <span class="type">uint8_t</span>&gt; last_cc;</span><br><span class="line">    <span class="keyword">auto</span> it = last_cc.<span class="built_in">find</span>(pid);</span><br><span class="line">    <span class="keyword">if</span> (it != last_cc.<span class="built_in">end</span>()) &#123;</span><br><span class="line">        <span class="type">uint8_t</span> expected = (it-&gt;second + <span class="number">1</span>) &amp; <span class="number">0x0F</span>;</span><br><span class="line">        <span class="keyword">if</span> (new_cc != expected) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    last_cc[pid] = new_cc;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-关键开发要点"><a href="#5-关键开发要点" class="headerlink" title="5. 关键开发要点"></a>5. 关键开发要点</h3><ol>
+<li><p><strong>同步恢复机制</strong>：</p>
+<ul>
+<li>实现基于0x47同步字节的滑动窗口检测（至少连续4个188字节间隔出现0x47才确认同步）</li>
+<li>处理连续计数器中断，检测包丢失</li>
+<li>同步丢失后进入搜索模式，重新定位同步字节</li>
+</ul>
+</li>
+<li><p><strong>PSI表解析</strong>：</p>
+<ul>
+<li>优先解析PAT→PMT，建立节目与PID的映射关系</li>
+<li>处理PSI Section的分段（Section可能跨多个TS包）和更新</li>
+<li>监测version_number变化，及时更新节目映射</li>
+<li>验证CRC32确保Section完整性</li>
+</ul>
+</li>
+<li><p><strong>PCR处理</strong>：</p>
+<ul>
+<li>实现高精度PCR时钟恢复（PLL或线性插值），误差控制在<strong>几微秒内</strong></li>
+<li>处理PCR间隔和不连续性（discontinuity_indicator），避免时钟漂移</li>
+<li>PCR抖动补偿：使用缓冲和平滑算法消除网络传输引入的PCR抖动</li>
+</ul>
+</li>
+<li><p><strong>PES重组</strong>：</p>
+<ul>
+<li>根据payload_start_indicator识别PES包起始</li>
+<li>处理PES包跨多个TS包的情况，正确重组完整PES包</li>
+<li>解析PES包头中的PTS&#x2F;DTS时间戳</li>
+<li>处理PES包长度为0的情况（视频流常见）</li>
+</ul>
+</li>
+<li><p><strong>错误处理策略</strong>：</p>
+<ul>
+<li>忽略传输错误指示置位的TS包</li>
+<li>处理PID错误、包顺序错误等异常情况</li>
+<li>实现流中断后的快速恢复机制</li>
+<li>CRC32校验失败的PSI Section应丢弃</li>
+</ul>
+</li>
+<li><p><strong>性能优化</strong>：</p>
+<ul>
+<li>使用<strong>内存池</strong>管理TS包和PES包，减少内存分配开销</li>
+<li>采用<strong>SIMD指令</strong>（如SSE&#x2F;AVX）加速TS包解析和同步字节搜索</li>
+<li>多线程处理：解析线程、解码线程、渲染线程分离</li>
+<li>PID过滤：尽早过滤不需要的PID，减少后续处理负担</li>
+</ul>
+</li>
+</ol>
+<h2 id="十一、扩展应用与C-开发工具"><a href="#十一、扩展应用与C-开发工具" class="headerlink" title="十一、扩展应用与C++开发工具"></a>十一、扩展应用与C++开发工具</h2><h3 id="1-常用TS处理工具库"><a href="#1-常用TS处理工具库" class="headerlink" title="1. 常用TS处理工具库"></a>1. 常用TS处理工具库</h3><table>
+<thead>
+<tr>
+<th>工具库</th>
+<th>功能</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>libavformat (FFmpeg)</td>
+<td>完整的TS读写、复用&#x2F;解复用</td>
+<td>音视频转码、播放器开发</td>
+</tr>
+<tr>
+<td>libts</td>
+<td>轻量级TS解析库</td>
+<td>嵌入式设备、资源受限场景</td>
+</tr>
+<tr>
+<td>GStreamer</td>
+<td>流媒体框架，支持TS插件</td>
+<td>复杂流媒体应用、多格式处理</td>
+</tr>
+<tr>
+<td>tsduck</td>
+<td>专业TS分析工具库</td>
+<td>广播级TS流分析、监控</td>
+</tr>
+</tbody></table>
+<h3 id="2-常用调试与分析命令"><a href="#2-常用调试与分析命令" class="headerlink" title="2. 常用调试与分析命令"></a>2. 常用调试与分析命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用FFprobe分析TS流</span></span><br><span class="line">ffprobe -show_streams -show_programs input.ts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用tsduck分析TS流结构</span></span><br><span class="line">tsinfo input.ts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 分析PSI/SI表</span></span><br><span class="line">tsdump input.ts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 分析PCR间隔和抖动</span></span><br><span class="line">tsanalyze input.ts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用FFmpeg将MP4转为TS</span></span><br><span class="line">ffmpeg -i input.mp4 -c copy -f mpegts output.ts</span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成HLS切片</span></span><br><span class="line">ffmpeg -i input.mp4 -c copy -f hls -hls_time 10 -hls_list_size 0 output.m3u8</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将RTMP流转为TS流</span></span><br><span class="line">ffmpeg -i rtmp://server/live/stream -c copy -f mpegts output.ts</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-典型应用案例"><a href="#3-典型应用案例" class="headerlink" title="3. 典型应用案例"></a>3. 典型应用案例</h3><ol>
+<li><p><strong>IPTV机顶盒</strong>：</p>
+<ul>
+<li>解析TS流，提取多节目信息</li>
+<li>实现频道切换（快速PID过滤）</li>
+<li>音视频同步播放</li>
+</ul>
+</li>
+<li><p><strong>直播流媒体服务器</strong>：</p>
+<ul>
+<li>将RTMP&#x2F;HTTP流封装为TS流</li>
+<li>支持HLS切片（生成.ts切片文件和.m3u8索引）</li>
+<li>多比特率自适应流（ABR）实现</li>
+</ul>
+</li>
+<li><p><strong>视频监控系统</strong>：</p>
+<ul>
+<li>实时封装摄像头视频为TS流</li>
+<li>支持多路视频复用传输</li>
+<li>存储TS流文件，支持快速回放</li>
+</ul>
+</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>MPEG-2 TS作为<strong>流媒体传输领域的基石技术</strong>，以其<strong>固定包长、强容错性、多节目复用</strong>和<strong>精准同步</strong>等特性，成为广播电视、IPTV、直播等领域的标准封装格式。对于C++流媒体开发者而言，深入理解TS流的结构和机制，掌握高效的解析和处理方法，是开发高性能、高可靠性流媒体应用的核心能力。</p>
+<p>TS流的设计理念——在不可靠环境中追求可靠传输——对于今天的网络直播、5G视频传输等场景依然具有重要指导意义，其核心技术思想也被后续的SRT、WebRTC等传输协议所借鉴。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://xutopia.top">xutopia77</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://xutopia.top/blog/mpeg2-ts-transport-stream-guide/">https://xutopia.top/blog/mpeg2-ts-transport-stream-guide/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://xutopia.top" target="_blank">xutopia77</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%9F%B3%E8%A7%86%E9%A2%91%E6%8A%80%E6%9C%AF/">音视频技术</a></div><div class="post-share"><div class="social-share" data-image="/images/user_avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/blog/modern-cmake-best-practices-guide/" title="🔧 现代CMake最佳实践：权限最小化与依赖管理完全指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">🔧 现代CMake最佳实践：权限最小化与依赖管理完全指南</div></div><div class="info-2"><div class="info-item-1">🔧 现代CMake最佳实践：权限最小化与依赖管理完全指南现代CMake（3.14+）的核心设计理念是基于目标的依赖管理，通过精确控制每个目标的依赖可见性，实现权限最小化、编译效率最大化。本文将系统讲解现代CMake的最佳实践，帮助你告别全局变量的混乱时代。   一、核心概念：PRIVATE&#x2F;PUBLIC&#x2F;INTERFACE1. 三种依赖可见性详解现代CMake通过三个关键字精确控制依赖的传播范围：    关键字 当前目标 依赖当前目标的其他目标 典型场景    PRIVATE ✅ 可见 ❌ 不可见 内部实现依赖，如第三方库、内部工具   PUBLIC ✅ 可见 ✅ 可见 接口依赖，如导出头文件中使用的库   INTERFACE ❌ 不可见 ✅ 可见 纯头文件库，仅对使用者生效   依赖传播示意图： 123A 依赖 B (PUBLIC)  →  使用 A 的目标也能看到 BA 依赖 B (PRIVATE) →  使用 A 的目标看不到 BA 依赖 B (INTERFACE) → A 自己看不到 B，但使用 A 的目标能看到 B  2. 依赖传播的实际例子123...</div></div></div></a><a class="pagination-related" href="/blog/ai-movie-agent/" title="AI电影《代理人》：当AI成为完美替身，我们亲手淘汰了自己"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">AI电影《代理人》：当AI成为完美替身，我们亲手淘汰了自己</div></div><div class="info-2"><div class="info-item-1">1当AI成为完美替身，我们亲手淘汰了自己，《代理人》一部预言人类困境的AI寓言。被算法驯化的人类，还剩下什么？   一部46分钟的AI短片，没有机器人觉醒、没有人类反抗，却让无数人看完后背发凉。它讲的不是未来，而是正在发生的现在——当我们把情感和工作都交给AI，最后被淘汰的，会是我们自己吗？  AI电影《代理人》详细故事情节这部由博主“新石器公园”制作的46分钟AI科幻短片，是类似《黑镜》的小见大式近未来故事，围绕一对情侣与仿生代理人的经历，探讨了科技对亲密关系、职场生存的冲击，完整情节如下： 1. 异地的“陪伴礼物”故事背景是近未来，人类已经建成了同步轨道太空城，男主陈亦安是一名太空城的工程师，他接到了为期三年的驻站任务，要和女友林维维分开。为了消解异地的隔阂，陈亦安给女友准备了一份特殊的礼物——同步感知仿生代理人：这个机器人的外形和陈亦安完全一模一样，通过额头上的同步芯片，陈亦安可以在遥远的太空城，远程操控这个替身，实时同步自己的动作、声音、感官，让他能像在身边一样陪伴女友，哪怕隔着地空距离，两人也能正常互动、亲密相处，就像从未分开。 一开始，两人对这个“替身”充满新奇，远程...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/images/user_avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xutopia77</div><div class="author-info-description">多领域计算机技术工程师 xutopia77，深耕嵌入式与系统开发、AI 大模型应用及前沿科技实践，同时以文字为舟，在文学写作与科技思辨间行走，分享技术实战、AI 新知、科技洞见与人文随笔。</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">45</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xutopia77"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/xutopia77" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.zhihu.com/people/xutopia77" target="_blank" title="Zhihu"><i class="fab fa-zhihu"></i></a><a class="social-icon" href="mailto:xutopiaf@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">见字如面，欢迎来到 xutopia77 的跨界博客｜专注软硬件开发、AI 前沿科技、技术实战与文学随笔分享 ✍️</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%F0%9F%93%A1-MPEG-2-TS%EF%BC%88Transport-Stream%EF%BC%89%E4%BC%A0%E8%BE%93%E6%B5%81%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">📡 MPEG-2 TS（Transport Stream）传输流详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E6%9C%AC%E5%AE%9A%E4%B9%89%E4%B8%8E%E6%A0%B8%E5%BF%83%E5%AE%9A%E4%BD%8D"><span class="toc-number">1.1.</span> <span class="toc-text">一、基本定义与核心定位</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81TS%E5%8C%85%E8%AF%A6%E7%BB%86%E7%BB%93%E6%9E%84%EF%BC%88188%E5%AD%97%E8%8A%82%E5%9B%BA%E5%AE%9A%E9%95%BF%E5%BA%A6%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">二、TS包详细结构（188字节固定长度）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-TS%E5%8C%85%E5%A4%B4%EF%BC%884%E5%AD%97%E8%8A%82%EF%BC%8C%E5%9B%BA%E5%AE%9A%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">1, TS包头（4字节，固定）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%80%82%E9%85%8D%E5%AD%97%E6%AE%B5%EF%BC%88Adaptation-Field%EF%BC%8C%E5%8F%AF%E9%80%89%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 适配字段（Adaptation Field，可选）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%9C%89%E6%95%88%E8%BD%BD%E8%8D%B7%EF%BC%88Payload%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. 有效载荷（Payload）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%88%86%E5%B1%82%E5%B0%81%E8%A3%85%E7%BB%93%E6%9E%84%EF%BC%88ES%E2%86%92PES%E2%86%92TS%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">三、分层封装结构（ES→PES→TS）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PES%E5%8C%85%E8%AF%A6%E7%BB%86%E7%BB%93%E6%9E%84"><span class="toc-number">1.3.1.</span> <span class="toc-text">PES包详细结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81PSI-SI%E8%A1%A8%E7%B3%BB%E7%BB%9F%EF%BC%88%E8%8A%82%E7%9B%AE%E5%AF%BC%E8%88%AA%E6%A0%B8%E5%BF%83%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">四、PSI&#x2F;SI表系统（节目导航核心）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-PSI-Section%E5%88%86%E6%AE%B5%E6%9C%BA%E5%88%B6"><span class="toc-number">1.4.1.</span> <span class="toc-text">1. PSI Section分段机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%A0%B8%E5%BF%83PSI%E8%A1%A8"><span class="toc-number">1.4.2.</span> <span class="toc-text">2. 核心PSI表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-PAT-PMT-%E7%9A%84%E6%95%B0%E9%87%8F%E3%80%81%E4%BD%8D%E7%BD%AE%E4%B8%8E%E5%91%A8%E6%9C%9F%E6%80%A7%E5%8F%91%E9%80%81"><span class="toc-number">1.4.3.</span> <span class="toc-text">2.5 PAT&#x2F;PMT 的数量、位置与周期性发送</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#PAT-%E8%A1%A8"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">PAT 表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PMT-%E8%A1%A8"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">PMT 表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%91%A8%E6%9C%9F%E6%80%A7%E5%8F%91%E9%80%81%E6%9C%BA%E5%88%B6"><span class="toc-number">1.4.3.3.</span> <span class="toc-text">周期性发送机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E9%99%85%E6%9F%A5%E7%9C%8B-PSI-%E7%BB%93%E6%9E%84"><span class="toc-number">1.4.3.4.</span> <span class="toc-text">实际查看 PSI 结构</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-SI%E8%A1%A8%EF%BC%88%E6%89%A9%E5%B1%95%E4%BF%A1%E6%81%AF%EF%BC%89"><span class="toc-number">1.4.4.</span> <span class="toc-text">3. SI表（扩展信息）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%9D%A1%E4%BB%B6%E6%8E%A5%E6%94%B6%EF%BC%88CA%EF%BC%89%E4%B8%8E%E5%8A%A0%E6%89%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">1.4.5.</span> <span class="toc-text">4. 条件接收（CA）与加扰机制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6%EF%BC%88PCR-PTS-DTS%EF%BC%89"><span class="toc-number">1.5.</span> <span class="toc-text">五、时间同步机制（PCR+PTS+DTS）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81TS%E6%B5%81%E6%AF%94%E7%89%B9%E7%8E%87%E4%B8%8E%E9%80%9F%E7%8E%87%E6%8E%A7%E5%88%B6"><span class="toc-number">1.6.</span> <span class="toc-text">六、TS流比特率与速率控制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%AF%94%E7%89%B9%E7%8E%87%E8%AE%A1%E7%AE%97"><span class="toc-number">1.6.1.</span> <span class="toc-text">1. 比特率计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-CBR%E4%B8%8EVBR"><span class="toc-number">1.6.2.</span> <span class="toc-text">2. CBR与VBR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%BC%93%E5%86%B2%E5%8C%BA%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.6.3.</span> <span class="toc-text">3. 缓冲区模型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7%E4%B8%8E%E4%BC%98%E5%8A%BF"><span class="toc-number">1.7.</span> <span class="toc-text">七、关键特性与优势</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9B%BA%E5%AE%9A%E9%95%BF%E5%BA%A6%E5%8C%85%E7%BB%93%E6%9E%84%EF%BC%88188%E5%AD%97%E8%8A%82%EF%BC%89"><span class="toc-number">1.7.1.</span> <span class="toc-text">1. 固定长度包结构（188字节）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BC%BA%E5%AE%B9%E9%94%99%E4%B8%8E%E6%81%A2%E5%A4%8D%E8%83%BD%E5%8A%9B"><span class="toc-number">1.7.2.</span> <span class="toc-text">2. 强容错与恢复能力</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%A4%9A%E8%8A%82%E7%9B%AE%E5%A4%8D%E7%94%A8%E8%83%BD%E5%8A%9B"><span class="toc-number">1.7.3.</span> <span class="toc-text">3. 多节目复用能力</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%81%B5%E6%B4%BB%E7%9A%84%E4%BC%A0%E8%BE%93%E6%8E%A7%E5%88%B6"><span class="toc-number">1.7.4.</span> <span class="toc-text">4. 灵活的传输控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%AE%9E%E6%97%B6%E6%80%A7%E4%BF%9D%E9%9A%9C"><span class="toc-number">1.7.5.</span> <span class="toc-text">5. 实时性保障</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E4%B8%8EPS%E6%B5%81%E5%8F%8A%E5%85%B6%E4%BB%96%E5%AE%B9%E5%99%A8%E6%A0%BC%E5%BC%8F%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="toc-number">1.8.</span> <span class="toc-text">八、与PS流及其他容器格式的对比</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%B8%8EPS%E6%B5%81%EF%BC%88Program-Stream%EF%BC%89%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8C%BA%E5%88%AB"><span class="toc-number">1.8.1.</span> <span class="toc-text">1. 与PS流（Program Stream）的核心区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-PS%E6%B5%81%EF%BC%88Program-Stream%EF%BC%89%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.8.2.</span> <span class="toc-text">2. PS流（Program Stream）详解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E6%A0%B8%E5%BF%83%E5%AE%9A%E4%BD%8D%E4%B8%8E%E8%AE%BE%E8%AE%A1%E7%9B%AE%E6%A0%87"><span class="toc-number">1.8.2.1.</span> <span class="toc-text">2.1 核心定位与设计目标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-PS%E5%8C%85%E7%BB%93%E6%9E%84%EF%BC%88%E5%8F%AF%E5%8F%98%E9%95%BF%E5%BA%A6%EF%BC%89"><span class="toc-number">1.8.2.2.</span> <span class="toc-text">2.2 PS包结构（可变长度）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-ES%E2%86%92PES%E2%86%92PS%E5%B0%81%E8%A3%85%E6%B5%81%E7%A8%8B"><span class="toc-number">1.8.2.3.</span> <span class="toc-text">2.3 ES→PES→PS封装流程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.8.2.4.</span> <span class="toc-text">2.4 适用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-%E4%BD%95%E6%97%B6%E9%80%89TS%E3%80%81%E4%BD%95%E6%97%B6%E9%80%89PS"><span class="toc-number">1.8.2.5.</span> <span class="toc-text">2.5 何时选TS、何时选PS</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%B8%8E%E5%85%B6%E4%BB%96%E5%B8%B8%E8%A7%81%E5%AE%B9%E5%99%A8%E6%A0%BC%E5%BC%8F%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="toc-number">1.8.3.</span> <span class="toc-text">3. 与其他常见容器格式的对比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.9.</span> <span class="toc-text">九、典型应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TS-over-IP-RTP%E5%B0%81%E8%A3%85"><span class="toc-number">1.9.1.</span> <span class="toc-text">TS over IP &#x2F; RTP封装</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81C-%E6%B5%81%E5%AA%92%E4%BD%93%E5%BC%80%E5%8F%91%E5%85%B3%E9%94%AE%E8%A6%81%E7%82%B9"><span class="toc-number">1.10.</span> <span class="toc-text">十、C++流媒体开发关键要点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-TS%E5%8C%85%E8%A7%A3%E6%9E%90%E6%B5%81%E7%A8%8B%EF%BC%88%E6%8E%A5%E6%94%B6%E7%AB%AF%EF%BC%89"><span class="toc-number">1.10.1.</span> <span class="toc-text">1. TS包解析流程（接收端）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-PAT-PMT%E8%A7%A3%E6%9E%90"><span class="toc-number">1.10.2.</span> <span class="toc-text">2. PAT&#x2F;PMT解析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-PES%E9%87%8D%E7%BB%84%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="toc-number">1.10.3.</span> <span class="toc-text">3. PES重组状态机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%90%8C%E6%AD%A5%E6%81%A2%E5%A4%8D%E6%9C%BA%E5%88%B6"><span class="toc-number">1.10.4.</span> <span class="toc-text">4. 同步恢复机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%85%B3%E9%94%AE%E5%BC%80%E5%8F%91%E8%A6%81%E7%82%B9"><span class="toc-number">1.10.5.</span> <span class="toc-text">5. 关键开发要点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E6%89%A9%E5%B1%95%E5%BA%94%E7%94%A8%E4%B8%8EC-%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7"><span class="toc-number">1.11.</span> <span class="toc-text">十一、扩展应用与C++开发工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%B8%B8%E7%94%A8TS%E5%A4%84%E7%90%86%E5%B7%A5%E5%85%B7%E5%BA%93"><span class="toc-number">1.11.1.</span> <span class="toc-text">1. 常用TS处理工具库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%B8%B8%E7%94%A8%E8%B0%83%E8%AF%95%E4%B8%8E%E5%88%86%E6%9E%90%E5%91%BD%E4%BB%A4"><span class="toc-number">1.11.2.</span> <span class="toc-text">2. 常用调试与分析命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8%E6%A1%88%E4%BE%8B"><span class="toc-number">1.11.3.</span> <span class="toc-text">3. 典型应用案例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.12.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/blog/first-principles-thinking/" title="🧠第一性原理：从赚钱到系统复制的底层思维框架">🧠第一性原理：从赚钱到系统复制的底层思维框架</a><time datetime="2026-04-19T16:10:00.000Z" title="发表于 2026-04-20 00:10:00">2026-04-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/blog/ai-era-software-development-paradigm/" title="AI新时代软件开发范式：从传统研发到LLM原生工程体系的革命性变革">AI新时代软件开发范式：从传统研发到LLM原生工程体系的革命性变革</a><time datetime="2026-04-19T16:01:00.000Z" title="发表于 2026-04-20 00:01:00">2026-04-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/blog/nodejs-notes/" title="🟢 Node.js 完整笔记">🟢 Node.js 完整笔记</a><time datetime="2026-04-19T11:30:00.000Z" title="发表于 2026-04-19 19:30:00">2026-04-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/blog/sse-technology/" title="🔄 Server-Sent Events (SSE) 技术详解">🔄 Server-Sent Events (SSE) 技术详解</a><time datetime="2026-04-19T08:00:00.000Z" title="发表于 2026-04-19 16:00:00">2026-04-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/blog/cloud-service-models-comprehensive-guide/" title="☁️ 云计算服务模型全解析：从 IaaS 到 CaaS，一文读懂所有「aaS」">☁️ 云计算服务模型全解析：从 IaaS 到 CaaS，一文读懂所有「aaS」</a><time datetime="2026-04-10T17:22:00.000Z" title="发表于 2026-04-11 01:22:00">2026-04-11</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By xutopia77</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
