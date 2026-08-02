@@ -186,6 +186,57 @@
         }
         .contact-link:hover { border-color: var(--accent); color: var(--text); transform: translateY(-2px); }
 
+        /* ============ WeChat Modal ============ */
+        .wechat-modal {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
+            z-index: 2000; align-items: center; justify-content: center;
+        }
+        .wechat-modal.active { display: flex; }
+        .wechat-modal-content {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 32px 28px 28px;
+            max-width: 320px; width: 90%; text-align: center;
+            position: relative; animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .wechat-modal-close {
+            position: absolute; top: 10px; right: 14px;
+            background: none; border: none; color: var(--text-muted);
+            font-size: 26px; cursor: pointer; line-height: 1; padding: 4px;
+        }
+        .wechat-modal-close:hover { color: var(--text); }
+        .wechat-modal h3 {
+            font-size: 18px; margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .wechat-qr {
+            width: 220px; height: 220px; background: #fff;
+            border-radius: 12px; margin: 0 auto 20px;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .wechat-qr img { width: 100%; height: 100%; object-fit: cover; }
+        .wechat-qr-fallback {
+            color: #666; font-size: 13px; padding: 20px; text-align: center; line-height: 1.6;
+        }
+        .wechat-id-label { color: var(--text-muted); font-size: 13px; margin-bottom: 4px; }
+        .wechat-id {
+            color: var(--text); font-size: 17px; font-weight: 600;
+            margin-bottom: 18px; font-family: 'Courier New', monospace; letter-spacing: 0.5px;
+        }
+        .wechat-copy-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--accent); color: #0d1117;
+            border: none; padding: 10px 24px;
+            border-radius: 8px; font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .wechat-copy-btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        .wechat-copy-btn.copied { background: var(--green); }
+
         /* ============ Footer ============ */
         footer {
             border-top: 1px solid var(--border); padding: 40px 0; text-align: center;
@@ -443,14 +494,50 @@
                 如果你对内容感兴趣，或是想交流技术、探讨文字，欢迎通过以下方式找到我。
             </p>
             <div class="contact-links">
-                <a href="https://github.com/xutopia77" target="_blank" class="contact-link">🐙 GitHub</a>
-                <a href="mailto:xutopiaf@gmail.com" class="contact-link">📮 Email</a>
-                <a href="https://www.zhihu.com/people/xutopia77" target="_blank" class="contact-link">💡 知乎</a>
-                <a href="https://www.cnblogs.com/xutopia" target="_blank" class="contact-link">📚 博客园</a>
+                <a href="https://github.com/xutopia77" target="_blank" class="contact-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                    <span>GitHub</span>
+                </a>
+                <a href="mailto:xutopiaf@gmail.com" class="contact-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    <span>Email</span>
+                </a>
+                <a href="https://www.zhihu.com/people/xutopia77" target="_blank" class="contact-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M5.721 0C2.251 0 0 2.25 0 5.719V18.28C0 21.751 2.252 24 5.721 24h12.56C21.751 24 24 21.75 24 18.281V5.72C24 2.249 21.75 0 18.281 0H5.72zm1.964 4.078c-.271.485-.509.969-.715 1.454h6.568c.875 0 1.415.253 1.415 1.094 0 .873-.526 1.262-1.415 1.262H9.644c-.403 0-.547.135-.547.538v1.398h3.499c2.098 0 2.772 1.062 2.772 2.406 0 1.074-.413 1.917-1.262 2.495-.649.443-1.711.625-2.847.625H4.078v.715c0 .403-.144.538-.547.538H2.495v-9.25h.06c.27-.485.508-.969.715-1.454H5.93c.403 0 .547.135.547.538v.715h6.03c1.262 0 2.098.253 2.772.715.674.462 1.094 1.142 1.094 2.406 0 1.23-.42 1.91-1.094 2.406-.674.462-1.51.715-2.772.715h-.715v1.454c0 .403-.144.538-.547.538H4.078v2.495h6.568c1.528 0 2.772-.253 3.732-.715 1.262-.674 2.098-1.711 2.098-3.499 0-1.262-.42-2.098-1.094-2.772-.674-.674-1.711-1.094-3.036-1.094H8.57V7.964h3.499c.875 0 1.415-.253 1.415-1.094 0-.873-.526-1.262-1.415-1.262H7.685zm9.786 8.25c-.271.485-.509.969-.715 1.454h2.495c.403 0 .547.135.547.538v3.857c0 .403-.144.538-.547.538h-1.625v.715c0 .403-.144.538-.547.538h-1.625v-7.46h.06c.27-.485.508-.969.715-1.454h1.142c.403 0 .547.135.547.538v.715h.06z"/></svg>
+                    <span>Zhihu</span>
+                </a>
+                <a href="https://x.com/xutopia77" target="_blank" class="contact-link">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    <span>Twitter</span>
+                </a>
+                <a href="javascript:void(0)" class="contact-link" onclick="showWechat()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.562-6.053V8.93l-.5-.07zm-2.847 2.685c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z"/></svg>
+                    <span>WeChat</span>
+                </a>
             </div>
         </div>
     </div>
 </section>
+
+<!-- ============ WeChat Modal ============ -->
+<div class="wechat-modal" id="wechatModal" onclick="hideWechat(event)">
+    <div class="wechat-modal-content">
+        <button class="wechat-modal-close" onclick="hideWechat()" aria-label="关闭">×</button>
+        <h3>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.562-6.053V8.93l-.5-.07zm-2.847 2.685c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z"/></svg>
+            微信联系
+        </h3>
+        <div class="wechat-qr" id="wechatQr">
+            <img src="/images/wechat-qr.jpg" alt="微信二维码" onerror="document.getElementById('wechatQr').innerHTML='<div class=\'wechat-qr-fallback\'>请放置二维码图片<br>路径: /images/wechat-qr.png</div>'">
+        </div>
+        <div class="wechat-id-label">微信号</div>
+        <div class="wechat-id">xutopia77</div>
+        <button class="wechat-copy-btn" id="wechatCopyBtn" onclick="copyWechatId()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>复制微信号</span>
+        </button>
+    </div>
+</div>
 
 <!-- ============ Footer ============ -->
 <footer>
@@ -479,6 +566,54 @@
         } else {
             nav.style.background = 'rgba(13, 17, 23, 0.8)';
         }
+    });
+
+    // ============ WeChat Modal ============
+    function showWechat() {
+        document.getElementById('wechatModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function hideWechat(event) {
+        // 点击遮罩层关闭，点击内容区不关闭
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById('wechatModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    function copyWechatId() {
+        const id = 'xutopia77';
+        const btn = document.getElementById('wechatCopyBtn');
+        const span = btn.querySelector('span');
+        const originalText = span.textContent;
+
+        const onSuccess = () => {
+            btn.classList.add('copied');
+            span.textContent = '✓ 已复制';
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                span.textContent = originalText;
+            }, 2000);
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(id).then(onSuccess).catch(fallbackCopy);
+        } else {
+            fallbackCopy();
+        }
+
+        function fallbackCopy() {
+            const textarea = document.createElement('textarea');
+            textarea.value = id;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try { document.execCommand('copy'); onSuccess(); } catch(e) {}
+            document.body.removeChild(textarea);
+        }
+    }
+    // ESC 关闭弹窗
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') hideWechat();
     });
 </script>
 
