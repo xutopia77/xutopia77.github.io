@@ -1,617 +1,216 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xutopia77 | 码耕墨耘，技文同行</title>
-    <meta name="description" content="xutopia77 — 横跨底层开发与全栈工程的技术人，AI实践者，写作者。深耕C/C++、Linux系统编程、音视频技术与AI Agent，以代码解决工程问题，以文字记录思考感悟。">
-    <meta name="keywords" content="xutopia77,计算机技术工程师,嵌入式开发,AI大模型,C/C++,Linux,音视频,全栈开发,技术博客,文学写作">
-    <meta name="author" content="xutopia77">
-    <meta property="og:title" content="xutopia77 | 码耕墨耘，技文同行">
-    <meta property="og:description" content="横跨底层开发与全栈工程的技术人，AI实践者，写作者。">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://xutopia.top">
-    <link rel="icon" href="/img/favicon.ico">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --bg: #0d1117;
-            --bg-card: #161b22;
-            --bg-elevated: #1c2333;
-            --border: #30363d;
-            --text: #e6edf3;
-            --text-secondary: #8b949e;
-            --text-muted: #6e7681;
-            --accent: #58a6ff;
-            --accent-hover: #79b8ff;
-            --green: #3fb950;
-            --orange: #d29922;
-            --pink: #f778ba;
-            --purple: #bc8cff;
-            --gradient: linear-gradient(135deg, #58a6ff 0%, #bc8cff 50%, #f778ba 100%);
-        }
-
-        html { scroll-behavior: smooth; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.7;
-            overflow-x: hidden;
-        }
-
-        a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
-        a:hover { color: var(--accent-hover); }
-
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-
-        /* ============ Nav ============ */
-        nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            background: rgba(13, 17, 23, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            transition: background 0.3s;
-        }
-        nav .container { display: flex; justify-content: space-between; align-items: center; height: 60px; }
-        .nav-logo { font-size: 18px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
-        .nav-logo span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .nav-links { display: flex; gap: 28px; list-style: none; }
-        .nav-links a { color: var(--text-secondary); font-size: 15px; transition: color 0.2s; }
-        .nav-links a:hover { color: var(--text); }
-
-        /* ============ Hero ============ */
-        .hero {
-            min-height: 100vh; display: flex; align-items: center; justify-content: center;
-            position: relative; overflow: hidden;
-        }
-        .hero-bg {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background:
-                radial-gradient(ellipse at 20% 30%, rgba(88, 166, 255, 0.08), transparent 50%),
-                radial-gradient(ellipse at 80% 70%, rgba(188, 140, 255, 0.08), transparent 50%),
-                radial-gradient(ellipse at 50% 100%, rgba(247, 120, 186, 0.05), transparent 50%);
-        }
-        .hero-content { position: relative; z-index: 1; text-align: center; padding: 80px 24px 40px; }
-        .hero-tag {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.3);
-            color: var(--accent); padding: 6px 16px; border-radius: 20px;
-            font-size: 14px; margin-bottom: 24px;
-        }
-        .hero-tag .dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: blink 2s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-        .hero h1 {
-            font-size: clamp(36px, 6vw, 64px); font-weight: 800; line-height: 1.2;
-            margin-bottom: 20px; letter-spacing: -1px;
-        }
-        .hero h1 .gradient { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .hero-subtitle { font-size: clamp(16px, 2.5vw, 20px); color: var(--text-secondary); max-width: 600px; margin: 0 auto 40px; }
-        .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-        .btn {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 12px 28px; border-radius: 10px; font-size: 15px; font-weight: 600;
-            transition: all 0.2s; border: 1px solid transparent;
-        }
-        .btn-primary { background: var(--accent); color: #0d1117; }
-        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(88, 166, 255, 0.3); color: #0d1117; }
-        .btn-secondary { background: var(--bg-card); color: var(--text); border-color: var(--border); }
-        .btn-secondary:hover { background: var(--bg-elevated); border-color: var(--accent); transform: translateY(-2px); }
-
-        /* Hero stats */
-        .hero-stats { display: flex; gap: 48px; justify-content: center; margin-top: 60px; flex-wrap: wrap; }
-        .stat { text-align: center; }
-        .stat-num { font-size: 32px; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .stat-label { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
-
-        /* ============ Section ============ */
-        section { padding: 80px 0; }
-        .section-header { text-align: center; margin-bottom: 48px; }
-        .section-tag { color: var(--accent); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-        .section-header h2 { font-size: clamp(28px, 4vw, 36px); font-weight: 700; margin-top: 8px; }
-        .section-header p { color: var(--text-secondary); margin-top: 12px; max-width: 600px; margin-left: auto; margin-right: auto; }
-
-        /* ============ About ============ */
-        .about-card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-            padding: 40px; max-width: 800px; margin: 0 auto; position: relative;
-        }
-        .about-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: var(--gradient); border-radius: 16px 16px 0 0;
-        }
-        .about-text { font-size: 16px; color: var(--text-secondary); line-height: 1.9; }
-        .about-text strong { color: var(--text); }
-        .about-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
-        .about-tag {
-            background: var(--bg-elevated); border: 1px solid var(--border);
-            padding: 6px 14px; border-radius: 8px; font-size: 13px; color: var(--text-secondary);
-        }
-
-        /* ============ Featured Posts ============ */
-        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
-        .post-card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
-            padding: 28px; transition: all 0.3s; display: flex; flex-direction: column;
-        }
-        .post-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3); }
-        .post-category { font-size: 13px; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
-        .post-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 12px; line-height: 1.4; }
-        .post-card p { font-size: 14px; color: var(--text-secondary); flex: 1; line-height: 1.6; }
-        .post-meta { display: flex; align-items: center; gap: 12px; margin-top: 16px; font-size: 13px; color: var(--text-muted); }
-        .post-arrow { color: var(--accent); font-size: 18px; transition: transform 0.2s; }
-        .post-card:hover .post-arrow { transform: translateX(4px); }
-
-        /* ============ Projects ============ */
-        .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
-        .project-card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
-            overflow: hidden; transition: all 0.3s; display: flex; flex-direction: column;
-        }
-        .project-card:hover { border-color: var(--purple); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3); }
-        .project-thumb { height: 160px; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; font-size: 48px; }
-        .project-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
-        .project-body h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-        .project-body p { font-size: 14px; color: var(--text-secondary); flex: 1; line-height: 1.6; margin-bottom: 16px; }
-        .project-links { display: flex; gap: 12px; }
-        .project-link {
-            font-size: 13px; padding: 6px 14px; border-radius: 8px;
-            border: 1px solid var(--border); color: var(--text-secondary); transition: all 0.2s;
-        }
-        .project-link:hover { border-color: var(--accent); color: var(--accent); }
-
-        /* ============ Skills ============ */
-        .skills-wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; max-width: 800px; margin: 0 auto; }
-        .skill-pill {
-            background: var(--bg-card); border: 1px solid var(--border);
-            padding: 10px 20px; border-radius: 10px; font-size: 14px; color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-        .skill-pill:hover { border-color: var(--accent); color: var(--text); transform: translateY(-2px); }
-
-        /* ============ Contact ============ */
-        .contact-card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-            padding: 48px; text-align: center; max-width: 700px; margin: 0 auto;
-        }
-        .contact-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 32px; }
-        .contact-link {
-            display: flex; align-items: center; gap: 8px;
-            background: var(--bg-elevated); border: 1px solid var(--border);
-            padding: 12px 24px; border-radius: 10px; color: var(--text-secondary);
-            transition: all 0.2s; font-size: 15px;
-        }
-        .contact-link:hover { border-color: var(--accent); color: var(--text); transform: translateY(-2px); }
-
-        /* ============ WeChat Modal ============ */
-        .wechat-modal {
-            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
-            z-index: 2000; align-items: center; justify-content: center;
-        }
-        .wechat-modal.active { display: flex; }
-        .wechat-modal-content {
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 16px; padding: 32px 28px 28px;
-            max-width: 320px; width: 90%; text-align: center;
-            position: relative; animation: modalIn 0.3s ease;
-        }
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        .wechat-modal-close {
-            position: absolute; top: 10px; right: 14px;
-            background: none; border: none; color: var(--text-muted);
-            font-size: 26px; cursor: pointer; line-height: 1; padding: 4px;
-        }
-        .wechat-modal-close:hover { color: var(--text); }
-        .wechat-modal h3 {
-            font-size: 18px; margin-bottom: 20px;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .wechat-qr {
-            width: 220px; height: 220px; background: #fff;
-            border-radius: 12px; margin: 0 auto 20px;
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
-        .wechat-qr img { width: 100%; height: 100%; object-fit: cover; }
-        .wechat-qr-fallback {
-            color: #666; font-size: 13px; padding: 20px; text-align: center; line-height: 1.6;
-        }
-        .wechat-id-label { color: var(--text-muted); font-size: 13px; margin-bottom: 4px; }
-        .wechat-id {
-            color: var(--text); font-size: 17px; font-weight: 600;
-            margin-bottom: 18px; font-family: 'Courier New', monospace; letter-spacing: 0.5px;
-        }
-        .wechat-copy-btn {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: var(--accent); color: #0d1117;
-            border: none; padding: 10px 24px;
-            border-radius: 8px; font-size: 14px; font-weight: 600;
-            cursor: pointer; transition: all 0.2s;
-        }
-        .wechat-copy-btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
-        .wechat-copy-btn.copied { background: var(--green); }
-
-        /* ============ Footer ============ */
-        footer {
-            border-top: 1px solid var(--border); padding: 40px 0; text-align: center;
-            color: var(--text-muted); font-size: 14px;
-        }
-        footer a { color: var(--text-secondary); }
-
-        /* ============ Animations ============ */
-        .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
-        .fade-in.visible { opacity: 1; transform: translateY(0); }
-
-        /* ============ Responsive ============ */
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .hero-stats { gap: 32px; }
-            .hero-buttons { flex-direction: column; align-items: center; }
-            .btn { width: 100%; max-width: 280px; justify-content: center; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>xutopia77</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+      background: #0c0c0f;
+      color: #e4e4e7;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    header {
+      padding: 60px 0 40px;
+    }
+    .label {
+      display: inline-block;
+      font-size: 0.78rem;
+      color: #a78bfa;
+      background: rgba(167, 139, 250, 0.1);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      letter-spacing: 0.3px;
+    }
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 18px;
+      letter-spacing: -0.5px;
+    }
+    h1 span {
+      background: linear-gradient(90deg, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .intro {
+      font-size: 1.08rem;
+      color: #a1a1aa;
+      margin-bottom: 36px;
+      max-width: 520px;
+    }
+    .links {
+      display: flex;
+      gap: 20px;
+      font-size: 0.92rem;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    .links a {
+      color: #d4d4d8;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .links a:hover {
+      color: #fff;
+    }
+    .links svg {
+      width: 15px;
+      height: 15px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+    .tech-section {
+      border-top: 1px solid #27272a;
+      padding-top: 32px;
+    }
+    .tech-group {
+      margin-bottom: 20px;
+    }
+    .tech-group:last-child {
+      margin-bottom: 0;
+    }
+    .tech-label {
+      font-size: 0.75rem;
+      color: #71717a;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+    .tech-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tech-item {
+      font-size: 0.85rem;
+      color: #a1a1aa;
+      background: #18181b;
+      border: 1px solid #27272a;
+      padding: 4px 12px;
+      border-radius: 6px;
+    }
+    footer {
+      padding: 24px 0 40px;
+      text-align: center;
+      color: #52525b;
+      font-size: 0.85rem;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <header>
+      <div class="label">工程师 / 写作者 / AI 实践者</div>
+      
+      <h1>在代码与文字之间，<br><span>寻找确定的秩序</span></h1>
+      
+      <p class="intro">
+        我是 xutopia77。以 C/C++ 为根基做系统与音视频，用全栈能力把想法落地，同时把思考写成文字。
+      </p>
+      
+      <div class="links">
+        <a href="https://xutopia.top/blog">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+          Blog
+        </a>
 
-<!-- ============ Navigation ============ -->
-<nav>
-    <div class="container">
-        <a href="/" class="nav-logo">🏗️ <span>xutopia77</span></a>
-        <ul class="nav-links">
-            <li><a href="/blog/">博客</a></li>
-            <li><a href="/archives/">归档</a></li>
-            <li><a href="/categories/">分类</a></li>
-            <li><a href="/tags/">标签</a></li>
-            <li><a href="/about/">关于</a></li>
-            <li><a href="https://github.com/xutopia77" target="_blank">GitHub</a></li>
-        </ul>
-    </div>
-</nav>
+        <a href="https://github.com/xutopia77?tab=repositories" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>
+          Projects
+        </a>
 
-<!-- ============ Hero ============ -->
-<section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-        <div class="hero-tag">
-            <span class="dot"></span>
-            <span>持续探索 · 技术实践 · 文字记录</span>
+        <a href="https://github.com/xutopia77" target="_blank">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          GitHub
+        </a>
+
+        <a href="mailto:your-email@example.com">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+          </svg>
+          Email
+        </a>
+
+        <a href="https://x.com/xutopia77" target="_blank">
+          <svg viewBox="0 0 24 24">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+          Twitter
+        </a>
+      </div>
+
+      <div class="tech-section">
+        <div class="tech-group">
+          <div class="tech-label">Languages</div>
+          <div class="tech-list">
+            <span class="tech-item">C / C++</span>
+            <span class="tech-item">Rust</span>
+            <span class="tech-item">Go</span>
+            <span class="tech-item">TypeScript</span>
+            <span class="tech-item">Python</span>
+          </div>
         </div>
-        <h1>码耕墨耘，<span class="gradient">技文同行</span></h1>
-        <p class="hero-subtitle">
-            横跨底层开发与全栈工程的技术人，AI 实践者，写作者。<br>
-            以 C/C++ 为根基深耕系统编程，以代码解决工程问题，以文字记录思考感悟。
-        </p>
-        <div class="hero-buttons">
-            <a href="/blog/" class="btn btn-primary">
-                📖 阅读文章
-            </a>
-            <a href="/about/" class="btn btn-secondary">
-                → 关于我
-            </a>
+
+        <div class="tech-group">
+          <div class="tech-label">Systems & Media</div>
+          <div class="tech-list">
+            <span class="tech-item">Linux</span>
+            <span class="tech-item">WebRTC</span>
+            <span class="tech-item">FFmpeg</span>
+            <span class="tech-item">VLC</span>
+          </div>
         </div>
-        <div class="hero-stats">
-            <div class="stat">
-                <div class="stat-num">40+</div>
-                <div class="stat-label">技术文章</div>
-            </div>
-            <div class="stat">
-                <div class="stat-num">2</div>
-                <div class="stat-label">开源项目</div>
-            </div>
-            <div class="stat">
-                <div class="stat-num">5+</div>
-                <div class="stat-label">技术领域</div>
-            </div>
-            <div class="stat">
-                <div class="stat-num">5年+</div>
-                <div class="stat-label">写作沉淀</div>
-            </div>
+
+        <div class="tech-group">
+          <div class="tech-label">Frontend & Full-stack</div>
+          <div class="tech-list">
+            <span class="tech-item">Vue</span>
+            <span class="tech-item">Electron</span>
+            <span class="tech-item">Tauri</span>
+            <span class="tech-item">Node.js</span>
+          </div>
         </div>
-    </div>
-</section>
 
-<!-- ============ About ============ -->
-<section id="about">
-    <div class="container">
-        <div class="section-header fade-in">
-            <div class="section-tag">About</div>
-            <h2>关于我</h2>
+        <div class="tech-group">
+          <div class="tech-label">AI & Others</div>
+          <div class="tech-list">
+            <span class="tech-item">AI Agent</span>
+            <span class="tech-item">Docker</span>
+            <span class="tech-item">微服务</span>
+          </div>
         </div>
-        <div class="about-card fade-in">
-            <div class="about-text">
-                你好，我是 <strong>xutopia77</strong>，一名横跨底层开发与全栈工程的技术人，也是一名在文字里安放思考的写作者。
-                <br><br>
-                以 <strong>C/C++</strong> 为根基，深耕 Linux 系统编程、底层网络模型与音视频技术落地，精通 WebRTC 实时流媒体传输；同时具备全栈开发能力，熟练使用 <strong>TypeScript/Go/Vue/Electron</strong> 完成从后端服务到跨端桌面应用的全链路开发。
-                <br><br>
-                作为 AI 实践者，专注 <strong>AI Agent 多智能体系统</strong>设计与 AI 工作流搭建；作为开源创作者，在 GitHub 开源了轻量级 C++ 序列化工具、音视频管理组件等项目。在代码之外，文字是我与世界对话的另一种方式。
-            </div>
-            <div class="about-tags">
-                <span class="about-tag">C/C++</span>
-                <span class="about-tag">Linux 系统编程</span>
-                <span class="about-tag">音视频 / WebRTC</span>
-                <span class="about-tag">Go 后端</span>
-                <span class="about-tag">Vue / Electron</span>
-                <span class="about-tag">AI Agent</span>
-                <span class="about-tag">微服务架构</span>
-                <span class="about-tag">技术写作</span>
-            </div>
-        </div>
-    </div>
-</section>
+      </div>
+    </header>
+  </div>
 
-<!-- ============ Featured Posts ============ -->
-<section id="posts">
-    <div class="container">
-        <div class="section-header fade-in">
-            <div class="section-tag">Blog</div>
-            <h2>精选文章</h2>
-            <p>技术实战、AI 探索、架构设计与人文思考</p>
-        </div>
-        <div class="posts-grid">
-            <a href="/blog/ai-era-software-development-paradigm/" class="post-card fade-in">
-                <div class="post-category">AI 思考</div>
-                <h3>AI 新时代软件开发范式：从传统研发到 LLM 原生工程体系</h3>
-                <p>AI 时代软件开发的革命性变革，从传统研发模式到 LLM 原生工程体系的完整解析。</p>
-                <div class="post-meta">
-                    <span>2026-04-20</span>
-                    <span class="post-arrow">→</span>
-                </div>
-            </a>
-            <a href="/blog/software-gui-to-cli/" class="post-card fade-in">
-                <div class="post-category">AI 思考</div>
-                <h3>从 GUI 优先到 CLI 原生：AI 时代软件交互的范式革命</h3>
-                <p>当软件的核心用户从人类变成 AI 智能体，一场席卷整个软件产业的底层变革已经到来。</p>
-                <div class="post-meta">
-                    <span>2026-04-05</span>
-                    <span class="post-arrow">→</span>
-                </div>
-            </a>
-            <a href="/blog/first-principles-thinking/" class="post-card fade-in">
-                <div class="post-category">思考</div>
-                <h3>第一性原理：从赚钱到系统复制的底层思维框架</h3>
-                <p>用第一性原理拆解问题本质，构建可复制的系统性思维框架。</p>
-                <div class="post-meta">
-                    <span>2026-04-20</span>
-                    <span class="post-arrow">→</span>
-                </div>
-            </a>
-            <a href="/blog/personal-company-management/" class="post-card fade-in">
-                <div class="post-category">个人成长</div>
-                <h3>把人生活成一家盈利的"一人公司"</h3>
-                <p>用企业经营的理性思维梳理人生混乱，从内耗迷茫到清醒自洽的经营哲学。</p>
-                <div class="post-meta">
-                    <span>2026-04-09</span>
-                    <span class="post-arrow">→</span>
-                </div>
-            </a>
-            <a href="/blog/libevent-series-index/" class="post-card fade-in">
-                <div class="post-category">libevent</div>
-                <h3>libevent 源码深度解析系列</h3>
-                <p>从源码层面深入解析 libevent 事件通知库，涵盖核心概念、API 详解、多线程编程等 26 篇。</p>
-                <div class="post-meta">
-                    <span>2026-04-11</span>
-                    <span class="post-arrow">→</span>
-                </div>
-            </a>
-            <a href="/blog/seo-complete-guide-for-hexo-blog/" class="post-card fade-in">
-                <div class="post-category">博客搭建</div>
-                <h3>SEO 超全详解：从基础原理到 Hexo 博客落地</h3>
-                <p>从搜索引擎工作原理到 Hexo 博客 SEO 优化的完整落地指南。</p>
-                <div class="post-meta">
-                    <span>2026-04-01</span>
-                    <span class="post-arrow">→</span>
-                </div>
-            </a>
-        </div>
-        <div style="text-align: center; margin-top: 40px;" class="fade-in">
-            <a href="/blog/" class="btn btn-secondary">查看全部文章 →</a>
-        </div>
-    </div>
-</section>
-
-<!-- ============ Projects ============ -->
-<section id="projects">
-    <div class="container">
-        <div class="section-header fade-in">
-            <div class="section-tag">Open Source</div>
-            <h2>开源项目</h2>
-            <p>用代码解决真实的工程问题</p>
-        </div>
-        <div class="projects-grid">
-            <div class="project-card fade-in">
-                <div class="project-thumb">🖼️</div>
-                <div class="project-body">
-                    <h3>Time Tidy</h3>
-                    <p>图片与视频管理工具，非侵入式设计，集成 AI 智能标签、相似度检测，支持 Web 端和桌面端。</p>
-                    <div class="project-links">
-                        <a href="/project/timetidy/" class="project-link">项目介绍</a>
-                        <a href="https://github.com/xutopia77/timetidy-prj" target="_blank" class="project-link">GitHub</a>
-                    </div>
-                </div>
-            </div>
-            <div class="project-card fade-in">
-                <div class="project-thumb">📹</div>
-                <div class="project-body">
-                    <h3>Record Manager</h3>
-                    <p>安防监控视频文件管理软件，支持视频检索、智能分类、标签标注、关键帧提取。</p>
-                    <div class="project-links">
-                        <a href="/project/record-manager/" class="project-link">项目介绍</a>
-                        <a href="https://github.com/xutopia77/record_manager" target="_blank" class="project-link">GitHub</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ============ Skills ============ -->
-<section id="skills">
-    <div class="container">
-        <div class="section-header fade-in">
-            <div class="section-tag">Tech Stack</div>
-            <h2>技术栈</h2>
-            <p>从底层到应用层，从工程到 AI</p>
-        </div>
-        <div class="skills-wrap fade-in">
-            <span class="skill-pill">C / C++</span>
-            <span class="skill-pill">Linux 系统编程</span>
-            <span class="skill-pill">libevent</span>
-            <span class="skill-pill">WebRTC</span>
-            <span class="skill-pill">FFmpeg</span>
-            <span class="skill-pill">Go / Gin</span>
-            <span class="skill-pill">TypeScript</span>
-            <span class="skill-pill">Vue 3</span>
-            <span class="skill-pill">Electron</span>
-            <span class="skill-pill">Python</span>
-            <span class="skill-pill">ONNX Runtime</span>
-            <span class="skill-pill">SQLite / MySQL</span>
-            <span class="skill-pill">微服务架构</span>
-            <span class="skill-pill">分布式系统</span>
-            <span class="skill-pill">Docker</span>
-            <span class="skill-pill">AI Agent</span>
-            <span class="skill-pill">AI 工作流</span>
-            <span class="skill-pill">CMake</span>
-        </div>
-    </div>
-</section>
-
-<!-- ============ Contact ============ -->
-<section id="contact">
-    <div class="container">
-        <div class="section-header fade-in">
-            <div class="section-tag">Contact</div>
-            <h2>联系我</h2>
-            <p>欢迎交流技术、探讨文字</p>
-        </div>
-        <div class="contact-card fade-in">
-            <p style="color: var(--text-secondary); font-size: 16px;">
-                如果你对内容感兴趣，或是想交流技术、探讨文字，欢迎通过以下方式找到我。
-            </p>
-            <div class="contact-links">
-                <a href="https://github.com/xutopia77" target="_blank" class="contact-link">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-                    <span>GitHub</span>
-                </a>
-                <a href="mailto:xutopiaf@gmail.com" class="contact-link">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    <span>Email</span>
-                </a>
-                <a href="https://x.com/xutopia77" target="_blank" class="contact-link">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                    <span>Twitter</span>
-                </a>
-                <a href="javascript:void(0)" class="contact-link" onclick="showWechat()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.562-6.053V8.93l-.5-.07zm-2.847 2.685c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z"/></svg>
-                    <span>WeChat</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ============ WeChat Modal ============ -->
-<div class="wechat-modal" id="wechatModal" onclick="hideWechat(event)">
-    <div class="wechat-modal-content">
-        <button class="wechat-modal-close" onclick="hideWechat()" aria-label="关闭">×</button>
-        <h3>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.562-6.053V8.93l-.5-.07zm-2.847 2.685c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z"/></svg>
-            微信联系
-        </h3>
-        <div class="wechat-qr" id="wechatQr">
-            <img src="/images/wechat-qr.jpg" alt="微信二维码" onerror="document.getElementById('wechatQr').innerHTML='<div class=\'wechat-qr-fallback\'>请放置二维码图片<br>路径: /images/wechat-qr.png</div>'">
-        </div>
-        <div class="wechat-id-label">微信号</div>
-        <div class="wechat-id">xutopia77</div>
-        <button class="wechat-copy-btn" id="wechatCopyBtn" onclick="copyWechatId()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            <span>复制微信号</span>
-        </button>
-    </div>
-</div>
-
-<!-- ============ Footer ============ -->
-<footer>
-    <div class="container">
-        <p>© 2026 xutopia77 · 码耕墨耘，技文同行 · <a href="/about/">关于</a> · <a href="/archives/">归档</a></p>
-    </div>
-</footer>
-
-<script>
-    // Scroll animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-    // Nav background on scroll
-    const nav = document.querySelector('nav');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            nav.style.background = 'rgba(13, 17, 23, 0.95)';
-        } else {
-            nav.style.background = 'rgba(13, 17, 23, 0.8)';
-        }
-    });
-
-    // ============ WeChat Modal ============
-    function showWechat() {
-        document.getElementById('wechatModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-    function hideWechat(event) {
-        // 点击遮罩层关闭，点击内容区不关闭
-        if (event && event.target !== event.currentTarget) return;
-        document.getElementById('wechatModal').classList.remove('active');
-        document.body.style.overflow = '';
-    }
-    function copyWechatId() {
-        const id = 'xutopia77';
-        const btn = document.getElementById('wechatCopyBtn');
-        const span = btn.querySelector('span');
-        const originalText = span.textContent;
-
-        const onSuccess = () => {
-            btn.classList.add('copied');
-            span.textContent = '✓ 已复制';
-            setTimeout(() => {
-                btn.classList.remove('copied');
-                span.textContent = originalText;
-            }, 2000);
-        };
-
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(id).then(onSuccess).catch(fallbackCopy);
-        } else {
-            fallbackCopy();
-        }
-
-        function fallbackCopy() {
-            const textarea = document.createElement('textarea');
-            textarea.value = id;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.select();
-            try { document.execCommand('copy'); onSuccess(); } catch(e) {}
-            document.body.removeChild(textarea);
-        }
-    }
-    // ESC 关闭弹窗
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') hideWechat();
-    });
-</script>
-
+  <footer>
+    <p>保持好奇，持续构建</p>
+  </footer>
 </body>
 </html>
