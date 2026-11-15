@@ -1,0 +1,20 @@
+---
+// /projects/<slug>/ 详情页：独立全屏页，构建时直读笔记库 project-index/<slug>/index.html
+import { listProjectSlugs, readProjectText } from "@/utils/vault-projects";
+
+export function getStaticPaths() {
+	return listProjectSlugs().map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const html = readProjectText(`${slug}/index.html`);
+if (!html || typeof html !== "string") {
+	throw new Error(`project-index/${slug}/index.html not found in vault`);
+}
+
+// 取 <html> 内部内容交给 Astro 输出（DOCTYPE 由 Astro 自动补）
+const inner = html
+	.replace(/^[\s\S]*?<html[^>]*>/i, "")
+	.replace(/<\/html>\s*$/i, "");
+---
+<html lang="zh-CN" set:html={inner} />
