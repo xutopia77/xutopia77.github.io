@@ -125,7 +125,7 @@ const siteLang = lang.replace("_", "-");
 const avatarUrl = await getAuthorAvatarUrl();
 // 作者个人页（/about/）绝对 URL，作为 Person.url
 const aboutUrl =
-	toAbsoluteUrl("/about/", siteConfig.site_url) ?? siteConfig.site_url;
+	toAbsoluteUrl("/blog/about/", siteConfig.site_url) ?? siteConfig.site_url;
 // 站点 publisher logo（Organization.logo），用于首页 @graph 的 Organization 节点
 const siteLogo = await getSiteLogo();
 

@@ -5,9 +5,9 @@ export const prerender = true;
 const robotsTxt = `
 User-agent: *
 Disallow: /_astro/
-Disallow: /archive/?tag=
-Disallow: /archive/?category=
-Disallow: /archive/?uncategorized=
+Disallow: /blog/archive/?tag=
+Disallow: /blog/archive/?category=
+Disallow: /blog/archive/?uncategorized=
 
 Sitemap: ${new URL("sitemap-index.xml", import.meta.env.SITE).href}
 `.trim();

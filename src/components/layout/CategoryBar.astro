@@ -14,7 +14,7 @@ const { currentPostCategory } = Astro.props as Props;
 const categories = await getCategoryList();
 const totalPosts = (await getSortedPostsList()).length;
 const homeUrl = url("/");
-const archiveUrl = url("/archive/");
+const archiveUrl = url("/blog/archive/");
 
 // 服务端计算初始高亮 pill（首屏无需等 JS）。
 // 查询串筛选（?category=/?tag=/?uncategorized）在静态页构建期不可知，
@@ -23,7 +23,7 @@ const pathname = Astro.url.pathname.replace(/\/$/, "");
 const homePath = homeUrl.replace(/\/$/, "");
 const archivePath = archiveUrl.replace(/\/$/, "");
 const isHome = pathname === homePath || pathname === "" || pathname === "/";
-const isCategories = pathname === "/categories";
+const isCategories = pathname === "/blog/categories";
 const isArchive = pathname === archivePath;
 const postCategory = (currentPostCategory || "").trim();
 
@@ -96,7 +96,7 @@ function initialActive(categoryName: string): {
     </div>
     <div class="category-divider shrink-0 more-divider" aria-hidden="true"></div>
     <a
-      href={url("/categories/")}
+      href={url("/blog/categories/")}
       class="category-pill focus-ring-inset text-sm px-3 py-1.5 shrink-0
              transition-colors duration-150 ease-out flex items-center justify-center gap-1"
       data-category-name="__categories__"
@@ -173,10 +173,10 @@ function initialActive(categoryName: string): {
   function getCategoryBarState(bar: HTMLElement, currentUrl: URL) {
     const pathname = currentUrl.pathname.replace(/\/$/, "");
     const homePath = (bar.getAttribute("data-home-path") || "/").replace(/\/$/, "");
-    const archivePath = (bar.getAttribute("data-archive-path") || "/archive").replace(/\/$/, "");
+    const archivePath = (bar.getAttribute("data-archive-path") || "/blog/archive").replace(/\/$/, "");
     const isHome = pathname === homePath || pathname === "" || pathname === "/";
     const isArchive = pathname === archivePath;
-    const isCategories = pathname === "/categories";
+    const isCategories = pathname === "/blog/categories";
 
     return {
       isHome,

@@ -58,7 +58,8 @@ function minifyInline(code: string, file: string): string {
 async function main() {
 	console.log("🗜 Minifying inline scripts in dist/...");
 
-	const htmlFiles = await glob(`${DIST_DIR}/**/*.html`);
+	// Windows 路径的反斜杠在 glob 模式里会被当作转义符，先转成正斜杠
+	const htmlFiles = await glob(`${DIST_DIR.replaceAll("\\", "/")}/**/*.html`);
 	let savedBytes = 0;
 	let touchedFiles = 0;
 	let scriptCount = 0;

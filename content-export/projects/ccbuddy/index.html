@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CCBuddy — Claude Code 会话监控面板</title>
+<meta name="description" content="CCBuddy:实时掌握多个 Claude Code 会话的运行状态、事件流与历史记录。Tauri2 桌面端 + 无头服务端双形态,单文件部署。" />
+<link rel="icon" type="image/png" href="data:image/png;base64,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" />
+<style>
+:root{
+  --bg:#0a0d14; --bg2:#0d1119; --card:#111624;
+  --border:rgba(255,255,255,.08); --border-hi:rgba(255,255,255,.16);
+  --text:#e9ecf3; --muted:#98a1b3; --dim:#6b738a;
+  --accent:#d97757; --accent-soft:rgba(217,119,87,.14);
+  --blue:#5b8def; --cream:#f3ede2;
+  --green:#4ade80; --amber:#fbbf24; --yellow:#eab308; --red:#f87171; --gray:#7d8593;
+  --mono:ui-monospace,'SF Mono','Cascadia Code','JetBrains Mono',Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC',sans-serif;
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+html{overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(217,119,87,.35)}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+/* ── 背景装饰 ─────────────────────── */
+.bg-fx{position:fixed;inset:0;z-index:-2;pointer-events:none}
+.bg-fx::before{content:'';position:absolute;top:-320px;left:50%;transform:translateX(-50%);width:900px;height:640px;
+  background:radial-gradient(ellipse at center,rgba(217,119,87,.16),rgba(91,141,239,.07) 45%,transparent 70%);filter:blur(10px)}
+.bg-fx::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);
+  background-size:44px 44px;mask-image:radial-gradient(ellipse 80% 55% at 50% 0%,#000 30%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 55% at 50% 0%,#000 30%,transparent 75%)}
+
+/* ── 导航 ─────────────────────── */
+nav{position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  background:rgba(10,13,20,.78);border-bottom:1px solid var(--border)}
+.nav-in{display:flex;align-items:center;gap:32px;height:64px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:17px;letter-spacing:.2px}
+.logo-tile{width:32px;height:32px;border-radius:8px;background:var(--cream);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 10px rgba(217,119,87,.25)}
+.logo-tile img{width:24px;height:24px;display:block}
+.nav-links{display:flex;gap:26px;font-size:14px;color:var(--muted);margin-left:auto}
+.nav-links a{transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.lang-btn{font-size:13px;font-weight:600;padding:7px 13px;border:1px solid var(--border-hi);border-radius:9px;color:var(--muted);background:rgba(255,255,255,.03);cursor:pointer;transition:.2s;font-family:var(--sans)}
+.lang-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.nav-gh{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:600;padding:7px 15px;border:1px solid var(--border-hi);border-radius:9px;transition:.2s}
+.nav-gh:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.hamburger{display:none;margin-left:auto;background:none;border:none;color:var(--text);cursor:pointer;padding:8px}
+.nav-right .hamburger{display:none}
+
+/* ── Hero ─────────────────────── */
+.hero{padding:84px 0 40px;text-align:center;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);
+  border:1px solid var(--border-hi);border-radius:999px;padding:6px 16px;margin-bottom:26px;background:rgba(255,255,255,.03)}
+.hero-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+h1{font-size:clamp(38px,6vw,62px);font-weight:800;line-height:1.16;letter-spacing:-.02em}
+h1 .grad{background:linear-gradient(100deg,#f0a58a,#d97757 45%,#e8956f);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{max-width:680px;margin:22px auto 0;font-size:17px;color:var(--muted)}
+.hero-cta{display:flex;gap:14px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;font-size:15px;font-weight:600;padding:13px 26px;border-radius:11px;transition:.2s;cursor:pointer;border:none}
+.btn-primary{background:linear-gradient(135deg,#e0805f,#c96244);color:#fff;box-shadow:0 6px 24px rgba(217,119,87,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(217,119,87,.45)}
+.btn-ghost{border:1px solid var(--border-hi);color:var(--text);background:rgba(255,255,255,.03)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.hero-stats{display:flex;justify-content:center;gap:44px;margin-top:46px;flex-wrap:wrap}
+.hstat{text-align:center}
+.hstat b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em}
+.hstat span{font-size:13px;color:var(--muted)}
+
+/* ── 产品 Mockup ─────────────────────── */
+.mock-zone{margin:58px auto 0;max-width:980px;position:relative}
+.mock-zone::before{content:'';position:absolute;inset:-40px -80px;background:radial-gradient(ellipse at 50% 60%,rgba(91,141,239,.10),transparent 65%);z-index:-1}
+.mock{border:1px solid var(--border-hi);border-radius:16px;overflow:hidden;background:var(--bg2);
+  box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.02) inset;text-align:left}
+.mock-bar{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.025)}
+.tl{width:11px;height:11px;border-radius:50%}
+.tl.r{background:#ff5f57}.tl.y{background:#febc2e}.tl.g{background:#28c840}
+.mock-body{display:grid;grid-template-columns:150px 1fr 1.35fr;min-height:380px}
+.mside{border-right:1px solid var(--border);padding:14px 10px;background:rgba(255,255,255,.015)}
+.mside-item{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:8px;font-size:13px;color:var(--muted);margin-bottom:3px}
+.mside-item.on{background:var(--accent-soft);color:#f0a58a;font-weight:600}
+.mside-item svg{width:14px;height:14px;flex-shrink:0}
+.mlist{border-right:1px solid var(--border);padding:12px;overflow:hidden}
+.mlist-h{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);margin:2px 4px 10px;font-family:var(--mono)}
+.msess{border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:rgba(255,255,255,.02)}
+.msess.sel{border-color:rgba(217,119,87,.5);background:var(--accent-soft)}
+.msess-t{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600}
+.msess-d{font-size:11px;color:var(--dim);margin-top:3px;font-family:var(--mono)}
+.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sdot.run{background:var(--green);box-shadow:0 0 7px var(--green);animation:pulse 1.6s infinite}
+.sdot.confirm{background:var(--amber);box-shadow:0 0 7px var(--amber)}
+.sdot.input{background:var(--blue);box-shadow:0 0 7px var(--blue)}
+.sdot.err{background:var(--red);box-shadow:0 0 7px var(--red)}
+.sdot.done{background:var(--gray)}
+.sbadge{margin-left:auto;font-size:10px;padding:2px 7px;border-radius:5px;font-weight:600;white-space:nowrap}
+.sbadge.run{color:var(--green);background:rgba(74,222,128,.12)}
+.sbadge.confirm{color:var(--amber);background:rgba(251,191,36,.12)}
+.sbadge.input{color:var(--blue);background:rgba(91,141,239,.12)}
+.sbadge.err{color:var(--red);background:rgba(248,113,113,.12)}
+.sbadge.done{color:var(--gray);background:rgba(125,133,147,.12)}
+.mfeed{padding:12px 14px;overflow:hidden}
+.mev{display:flex;gap:9px;padding:7px 0;border-bottom:1px dashed rgba(255,255,255,.05);font-size:12px;align-items:baseline}
+.mev:last-child{border:none}
+.mev-ic{width:17px;height:17px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;font-family:var(--mono);font-weight:700;transform:translateY(2px)}
+.mev-ic.tool{background:rgba(91,141,239,.15);color:var(--blue)}
+.mev-ic.usr{background:var(--accent-soft);color:#f0a58a}
+.mev-ic.ok{background:rgba(74,222,128,.13);color:var(--green)}
+.mev-ic.note{background:rgba(251,191,36,.13);color:var(--amber)}
+.mev b{font-weight:600}
+.mev span{color:var(--dim);font-family:var(--mono);font-size:11px;margin-left:auto;flex-shrink:0}
+.mev p{color:var(--muted);font-size:11.5px;line-height:1.5}
+.mock-foot{display:flex;gap:18px;align-items:center;padding:9px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--dim);font-family:var(--mono);background:rgba(255,255,255,.015);flex-wrap:wrap}
+.mock-foot i{font-style:normal;display:flex;align-items:center;gap:6px}
+.mock-foot .sdot{width:6px;height:6px}
+
+/* ── 通用 Section ─────────────────────── */
+section{padding:88px 0}
+.sec-head{text-align:center;max-width:680px;margin:0 auto 54px}
+.kicker{display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;font-family:var(--mono)}
+h2{font-size:clamp(27px,4vw,38px);font-weight:800;letter-spacing:-.02em;line-height:1.25}
+.sec-head p{color:var(--muted);margin-top:14px;font-size:15.5px}
+
+/* ── 功能卡片 ─────────────────────── */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.fcard{border:1px solid var(--border);border-radius:var(--radius);padding:26px 24px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.008));transition:.25s;position:relative;overflow:hidden}
+.fcard:hover{transform:translateY(-4px);border-color:var(--border-hi);box-shadow:0 14px 40px rgba(0,0,0,.4)}
+.fcard::before{content:'';position:absolute;top:0;left:24px;right:24px;height:1px;background:linear-gradient(90deg,transparent,rgba(217,119,87,.55),transparent);opacity:0;transition:.25s}
+.fcard:hover::before{opacity:1}
+.fic{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;font-size:19px}
+.fic.a{background:var(--accent-soft);color:#f0a58a}
+.fic.b{background:rgba(91,141,239,.13);color:var(--blue)}
+.fic.g{background:rgba(74,222,128,.12);color:var(--green)}
+.fic.y{background:rgba(251,191,36,.12);color:var(--amber)}
+.fic.p{background:rgba(192,132,252,.12);color:#c084fc}
+.fic.c{background:rgba(34,211,238,.12);color:#22d3ee}
+.fcard h3{font-size:16.5px;font-weight:700;margin-bottom:9px}
+.fcard p{font-size:13.8px;color:var(--muted);line-height:1.75}
+.fcard code{font-family:var(--mono);font-size:12px;color:var(--blue);background:rgba(91,141,239,.1);padding:2px 7px;border-radius:5px}
+
+/* ── 工作原理 ─────────────────────── */
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:14px;align-items:stretch}
+.fnode{border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px;background:var(--bg2);text-align:center}
+.fnode .fi{font-size:26px;margin-bottom:12px}
+.fnode h4{font-size:15px;font-weight:700;margin-bottom:8px}
+.fnode p{font-size:12.8px;color:var(--muted);line-height:1.65}
+.fnode code{font-family:var(--mono);font-size:11px;color:#f0a58a;background:var(--accent-soft);padding:2px 6px;border-radius:5px;word-break:break-all}
+.farrow{display:flex;align-items:center;color:var(--dim);font-size:20px}
+.fnote{text-align:center;margin-top:26px;font-size:13px;color:var(--muted)}
+.fnote code{font-family:var(--mono);font-size:12px;color:var(--blue);background:rgba(91,141,239,.1);padding:2px 7px;border-radius:5px}
+
+/* ── 双形态 ─────────────────────── */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.dcard{border:1px solid var(--border);border-radius:18px;padding:32px 30px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.005));position:relative;transition:.25s}
+.dcard:hover{border-color:var(--border-hi);transform:translateY(-3px)}
+.dcard.hot{border-color:rgba(217,119,87,.4);background:linear-gradient(180deg,rgba(217,119,87,.07),rgba(217,119,87,.015))}
+.dtag{position:absolute;top:-11px;left:28px;font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;letter-spacing:.06em}
+.dtag.desk{background:#2a3142;color:#c3cbdc}
+.dtag.srv{background:linear-gradient(135deg,#e0805f,#c96244);color:#fff;box-shadow:0 4px 14px rgba(217,119,87,.4)}
+.dcard .dic{font-size:30px;margin-bottom:16px}
+.dcard h3{font-size:19px;font-weight:800;margin-bottom:6px}
+.dcard .dsub{font-size:13px;color:var(--dim);font-family:var(--mono);margin-bottom:18px}
+.dcard ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.dcard li{font-size:13.8px;color:var(--muted);display:flex;gap:10px;align-items:flex-start}
+.dcard li::before{content:'✓';color:var(--accent);font-weight:800;flex-shrink:0}
+.dcard.sv li::before{color:var(--blue)}
+.codeblk{background:#070a10;border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-family:var(--mono);font-size:12.5px;line-height:1.8;overflow-x:auto;position:relative}
+.codeblk .cm{color:#5b6478}
+.codeblk .kw{color:#c792ea}
+.codeblk .st{color:#a5d6a7}
+.codeblk .hl{color:#f0a58a}
+.copybtn{position:absolute;top:9px;right:9px;font-size:11px;color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;font-family:var(--sans);transition:.2s}
+.copybtn:hover{color:var(--text);border-color:var(--border-hi)}
+
+/* ── 快速开始 ─────────────────────── */
+.tabs{display:flex;gap:8px;justify-content:center;margin-bottom:26px}
+.tab{font-size:13.5px;font-weight:600;padding:9px 22px;border-radius:9px;border:1px solid var(--border);color:var(--muted);cursor:pointer;background:rgba(255,255,255,.02);transition:.2s;font-family:var(--sans)}
+.tab:hover{color:var(--text)}
+.tab.on{background:var(--accent-soft);border-color:rgba(217,119,87,.5);color:#f0a58a}
+.panel{max-width:720px;margin:0 auto}
+.panel .codeblk{font-size:13.5px;padding:20px 22px}
+.qs-extra{text-align:center;margin-top:24px;font-size:13.5px;color:var(--muted)}
+.qs-extra b{color:var(--text)}
+.qs-extra code{font-family:var(--mono);font-size:12px;color:var(--blue);background:rgba(91,141,239,.1);padding:2px 7px;border-radius:5px}
+
+/* ── 产品截图 ─────────────────────── */
+.shot-grid{max-width:1000px;margin:0 auto}
+.shot-card{border:1px solid var(--border);border-radius:16px;padding:18px;background:var(--bg2);transition:.25s}
+.shot-card:hover{border-color:var(--border-hi)}
+.shot-card img{width:100%;display:block;border-radius:11px;background:#0d1017}
+.shot-card h3{font-size:15px;font-weight:700;margin-top:14px;display:flex;align-items:center;gap:8px}
+.shot-card h3 .sdot{width:7px;height:7px}
+.shot-card p{font-size:12.5px;color:var(--dim);margin-top:4px}
+
+/* ── 安全 ─────────────────────── */
+.sec-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.scard{border:1px solid var(--border);border-radius:var(--radius);padding:22px 20px;background:rgba(255,255,255,.02)}
+.scard .si{font-size:22px;margin-bottom:12px}
+.scard h4{font-size:14.5px;font-weight:700;margin-bottom:7px}
+.scard p{font-size:12.5px;color:var(--muted);line-height:1.7}
+
+/* ── Footer ─────────────────────── */
+footer{border-top:1px solid var(--border);padding:44px 0 40px;margin-top:30px}
+.foot-in{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.foot-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px}
+.foot-brand .logo-tile{width:28px;height:28px}
+.foot-brand .logo-tile img{width:20px;height:20px}
+.foot-meta{font-size:13px;color:var(--dim)}
+.foot-links{display:flex;gap:22px;font-size:13.5px;color:var(--muted)}
+.foot-links a:hover{color:var(--accent)}
+
+/* ── 入场动画(仅 JS 可用时隐藏,渐进增强)─────────────────────── */
+.js .rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.js .rv.in{opacity:1;transform:none}
+.js .rv.d1{transition-delay:.08s}.js .rv.d2{transition-delay:.16s}.js .rv.d3{transition-delay:.24s}
+
+/* ── 下载区 ─────────────────────── */
+.dl-badge{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;font-family:var(--mono);color:var(--muted);border:1px solid var(--border-hi);border-radius:99px;padding:7px 16px;margin-bottom:18px;background:rgba(255,255,255,.03)}
+.dl-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite}
+.dl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.dl-card{border:1px solid var(--border);border-radius:16px;padding:28px 22px;background:var(--bg2);text-align:center;transition:.25s}
+.dl-card:hover{border-color:var(--border-hi);transform:translateY(-4px);box-shadow:0 14px 40px rgba(0,0,0,.4)}
+.dl-ic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#f3ede2;margin:0 auto 14px}
+.dl-ic svg{width:24px;height:24px;color:#141821}
+.dl-card h3{font-size:17px;font-weight:700}
+.dl-d{font-size:12.5px;color:var(--dim);margin:6px 0 18px;font-family:var(--mono)}
+.dl-btns{display:flex;flex-direction:column;gap:9px}
+.dl-btn{width:100%;justify-content:center;font-size:14px;padding:11px 16px}
+.dl-note{margin-top:28px;text-align:center;font-size:13.5px;color:var(--dim)}
+.dl-note a{color:var(--accent);border-bottom:1px dashed rgba(217,119,87,.45)}
+.dl-note a:hover{border-bottom-style:solid;color:#f0a58a}
+
+/* ── 响应式 ─────────────────────── */
+@media(max-width:920px){
+  .mock-body{grid-template-columns:150px 1fr}
+  .mfeed{display:none}
+  .grid{grid-template-columns:1fr 1fr}
+  .sec-grid{grid-template-columns:1fr 1fr}
+  .flow{grid-template-columns:1fr;gap:8px}
+  .farrow{justify-content:center;transform:rotate(90deg)}
+  .duo{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .hamburger{display:block}
+  .nav-right{margin-left:auto}
+  .nav-links.open{display:flex;position:absolute;top:64px;left:0;right:0;flex-direction:column;background:rgba(10,13,20,.97);border-bottom:1px solid var(--border);padding:18px 24px;gap:16px}
+  .nav-gh{margin-left:0}
+  section{padding:64px 0}
+}
+@media(max-width:760px){
+  .dl-grid{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .grid,.sec-grid{grid-template-columns:1fr}
+  .mock-body{grid-template-columns:1fr}
+  .mside{display:none}
+  .hero-stats{gap:26px}
+  .nav-gh span{display:none}
+}
+</style>
+</head>
+<body>
+<div class="bg-fx"></div>
+
+<!-- ═══ 导航 ═══ -->
+<nav>
+  <div class="wrap nav-in">
+    <a class="brand" href="#">
+      <span class="logo-tile"><img src="data:image/png;base64,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" alt="CCBuddy logo"></span>
+      CCBuddy
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#features" data-i18n="nav_features">功能</a>
+      <a href="#how" data-i18n="nav_how">工作原理</a>
+      <a href="#forms" data-i18n="nav_forms">双形态</a>
+      <a href="#download" data-i18n="nav_dl">下载</a>
+      <a href="#quickstart" data-i18n="nav_qs">快速开始</a>
+      <a href="#security" data-i18n="nav_sec">安全</a>
+    </div>
+    <div class="nav-right">
+      <button class="lang-btn" id="langBtn" aria-label="切换语言">EN</button>
+      <a class="nav-gh" href="https://github.com/xutopia77/ccbuddy" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>GitHub</span>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="菜单">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ Hero ═══ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-badge rv in"><span class="dot"></span><span data-i18n="hero_badge">开源 · MIT License · 为 Claude Code 而生</span></div>
+    <h1 class="rv in"><span data-i18n="h1a">你的 Claude Code</span><br><span class="grad" data-i18n="h1b">会话监控面板</span></h1>
+    <p class="hero-sub rv in d1" data-i18n="hero_sub">实时掌握多个 Claude Code 会话的运行状态、事件流与历史记录。<br>谁在等确认、谁在出错、谁跑完了 —— 一眼看清,不再逐个终端切换。</p>
+    <div class="hero-cta rv in d2">
+      <a class="btn btn-primary" href="#quickstart"><span data-i18n="cta_qs">快速开始</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="btn btn-ghost" href="#download">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span data-i18n="cta_dl">下载</span>
+      </a>
+      <a class="btn btn-ghost" href="https://github.com/xutopia77/ccbuddy" target="_blank" rel="noopener" data-i18n="cta_src">查看源码</a>
+    </div>
+    <div class="hero-stats rv in d3">
+      <div class="hstat"><b data-i18n="stat1b">5 种</b><span data-i18n="stat1s">会话状态实时推断</span></div>
+      <div class="hstat"><b data-i18n="stat2b">2 种</b><span data-i18n="stat2s">发布形态(桌面 / 服务端)</span></div>
+      <div class="hstat"><b data-i18n="stat3b">0 依赖</b><span data-i18n="stat3s">Hook 全程离线工作</span></div>
+      <div class="hstat"><b data-i18n="stat4b">1 个</b><span data-i18n="stat4s">单文件即可部署</span></div>
+    </div>
+
+    <!-- 产品界面 Mockup(纯 CSS 构建) -->
+    <div class="mock-zone rv in d3">
+      <div class="mock">
+        <div class="mock-bar">
+          <span class="tl r"></span><span class="tl y"></span><span class="tl g"></span>
+        </div>
+        <div class="mock-body">
+          <div class="mside">
+            <div class="mside-item on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg><span data-i18n="m_events">事件流</span></div>
+            <div class="mside-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span data-i18n="m_history">历史会话</span></div>
+            <div class="mside-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg><span data-i18n="m_usage">用量</span></div>
+            <div class="mside-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="m_settings">设置</span></div>
+          </div>
+          <div class="mlist">
+            <div class="mlist-h" data-i18n="m_active">活跃会话 · 4</div>
+            <div class="msess sel">
+              <div class="msess-t"><span class="sdot run"></span>refactor-auth-module<span class="sbadge run" data-i18n="st_run">运行中</span></div>
+              <div class="msess-d">~/.claude/projects/api-server</div>
+            </div>
+            <div class="msess">
+              <div class="msess-t"><span class="sdot confirm"></span>fix-payment-bug<span class="sbadge confirm" data-i18n="st_confirm">等待确认</span></div>
+              <div class="msess-d">~/.claude/projects/web-app</div>
+            </div>
+            <div class="msess">
+              <div class="msess-t"><span class="sdot input"></span>write-api-docs<span class="sbadge input" data-i18n="st_input">等待输入</span></div>
+              <div class="msess-d">~/.claude/projects/docs</div>
+            </div>
+            <div class="msess">
+              <div class="msess-t"><span class="sdot err"></span>migrate-db-schema<span class="sbadge err" data-i18n="st_err">出错</span></div>
+              <div class="msess-d">~/.claude/projects/infra</div>
+            </div>
+            <div class="msess">
+              <div class="msess-t"><span class="sdot done"></span>add-unit-tests<span class="sbadge done" data-i18n="st_done">已完成</span></div>
+              <div class="msess-d">~/.claude/projects/api-server</div>
+            </div>
+          </div>
+          <div class="mfeed">
+            <div class="mlist-h" data-i18n="m_feedtitle">事件流 · refactor-auth-module</div>
+            <div class="mev"><span class="mev-ic usr">U</span><div><b data-i18n="m_e1b">用户输入</b><p data-i18n="m_e1p">把 JWT 校验抽成独立中间件…</p></div><span>14:02:11</span></div>
+            <div class="mev"><span class="mev-ic tool">T</span><div><b>PreToolUse</b><p>Read · src/auth/jwt.ts</p></div><span>14:02:13</span></div>
+            <div class="mev"><span class="mev-ic ok">✓</span><div><b>PostToolUse</b><p data-i18n="m_e3p">Read 完成(1.2k tokens)</p></div><span>14:02:14</span></div>
+            <div class="mev"><span class="mev-ic tool">T</span><div><b>PreToolUse</b><p>Edit · src/auth/middleware.ts</p></div><span>14:02:19</span></div>
+            <div class="mev"><span class="mev-ic ok">✓</span><div><b>PostToolUse</b><p data-i18n="m_e5p">Edit 完成 · +42 −18</p></div><span>14:02:21</span></div>
+            <div class="mev"><span class="mev-ic tool">T</span><div><b>PreToolUse</b><p>Bash · cargo test --lib</p></div><span>14:02:25</span></div>
+            <div class="mev"><span class="mev-ic note">N</span><div><b>Notification</b><p data-i18n="m_e7p">Claude 正在等待你的输入</p></div><span>14:02:30</span></div>
+          </div>
+        </div>
+        <div class="mock-foot">
+          <i><span class="sdot run"></span><span data-i18n="m_f1">SSE 已连接</span></i>
+          <i data-i18n="m_f2">hooks: 3 已注册</i>
+          <i style="margin-left:auto" data-i18n="m_f3">增量解析 · mtime 缓存命中</i>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ 产品截图(紧跟 Mockup,真实界面)═══ -->
+<section id="shots" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="kicker">Preview</span>
+      <h2 data-i18n="sh_title">一睹为快</h2>
+      <p data-i18n="sh_sub">界面长什么样?一张图说话。</p>
+    </div>
+    <div class="shot-grid">
+      <div class="shot-card rv">
+        <img id="shotUsage" src="usage.jpg" alt="CCBuddy 用量面板 · Usage panel">
+        <h3><span class="sdot run"></span><span data-i18n="sh1h">用量面板</span></h3>
+        <p data-i18n="sh1p">用量卡片、Token 消耗趋势、活跃热力图与构成占比一览。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 功能 ═══ -->
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="kicker">Features</span>
+      <h2 data-i18n="f_title">专为重度 Claude Code 用户打造</h2>
+      <p data-i18n="f_sub">开了十个终端并行干活?CCBuddy 把所有会话装进一块面板,状态变化第一时间知道。</p>
+    </div>
+    <div class="grid">
+      <div class="fcard rv">
+        <div class="fic a">⚡</div>
+        <h3 data-i18n="f1t">实时事件流</h3>
+        <p data-i18n="f1p">通过 Claude Code Hooks 采集每次工具调用、用户输入与通知,按会话分文件存储 JSONL 日志,面板实时呈现每个会话正在发生什么。</p>
+      </div>
+      <div class="fcard rv d1">
+        <div class="fic b">🧠</div>
+        <h3 data-i18n="f2t">智能状态机</h3>
+        <p data-i18n="f2p">事件序列驱动状态推断:运行中 / 等待确认 / 等待输入 / 出错 / 已完成 五种状态一目了然,等待确认与出错自动标记未读,绝不漏掉需要你处理的那一刻。</p>
+      </div>
+      <div class="fcard rv d2">
+        <div class="fic g">💬</div>
+        <h3 data-i18n="f3t">历史会话回放</h3>
+        <p data-i18n="f3p">直接读取 Claude Code 原生会话记录(<code>~/.claude/projects/</code>),以聊天记录形式回放完整对话,只读零侵入,不改动任何原始数据。</p>
+      </div>
+      <div class="fcard rv">
+        <div class="fic y">📊</div>
+        <h3 data-i18n="f4t">用量统计</h3>
+        <p data-i18n="f4p">趋势图 + 环形图直观展示 token 消耗与用量分布,自动刷新周期可调,花的每一批 token 都看得见、算得清。</p>
+      </div>
+      <div class="fcard rv d1">
+        <div class="fic p">🔔</div>
+        <h3 data-i18n="f5t">任务栏提醒</h3>
+        <p data-i18n="f5p">桌面端支持任务栏角标与窗口闪烁提醒,会话等待确认或出错时即使最小化也不会错过,切回来处理完继续跑。</p>
+      </div>
+      <div class="fcard rv d2">
+        <div class="fic c">🌐</div>
+        <h3 data-i18n="f6t">中英双语</h3>
+        <p data-i18n="f6p">界面内建中英文切换,桌面端与服务端共用同一套前端,所有视图、状态徽标与图表文案完整覆盖。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 工作原理 ═══ -->
+<section id="how" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="kicker">How it works</span>
+      <h2 data-i18n="h_title">三步接线,零侵入采集</h2>
+      <p data-i18n="h_sub">不改 Claude Code 本体、不联网上报,一条 Hook 管道把事件送进面板。</p>
+    </div>
+    <div class="flow rv">
+      <div class="fnode">
+        <div class="fi">🪝</div>
+        <h4 data-i18n="n1t">① Hook 采集</h4>
+        <p data-i18n="n1p">设置页一键安装 Hooks 到 <code>settings.json</code>,<code>ccbuddy-hook</code> 把事件原样落盘</p>
+      </div>
+      <div class="farrow">→</div>
+      <div class="fnode">
+        <div class="fi">📁</div>
+        <h4 data-i18n="n2t">② 本地日志</h4>
+        <p data-i18n="n2p">按会话分文件追加写入 <code>~/.ccbuddy/events/</code>,纯文本 JSONL,随时可审计</p>
+      </div>
+      <div class="farrow">→</div>
+      <div class="fnode">
+        <div class="fi">🖥️</div>
+        <h4 data-i18n="n3t">③ 面板呈现</h4>
+        <p data-i18n="n3p">按 mtime 增量解析 + 状态机推断,每会话保留最新 50 条事件,资源占用极低</p>
+      </div>
+    </div>
+    <p class="fnote rv" data-i18n="h_note">历史会话视图直接只读 <code>~/.claude/projects/</code> 原生记录 · 全程离线,hook 无需联网</p>
+  </div>
+</section>
+
+<!-- ═══ 双形态 ═══ -->
+<section id="forms">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="kicker">Two forms</span>
+      <h2 data-i18n="fm_title">桌面端 &amp; 服务端,一套前端两种姿势</h2>
+      <p data-i18n="fm_sub">前后端通过统一 RPC 协议通信,业务代码不接触 Tauri / HTTP 细节 —— 同一个界面,既能跑在桌面上,也能跑在服务器里。</p>
+    </div>
+    <div class="duo">
+      <div class="dcard rv">
+        <span class="dtag desk" data-i18n="d1_tag">桌面端</span>
+        <div class="dic">💻</div>
+        <h3 data-i18n="d1t">Tauri 2 原生应用</h3>
+        <div class="dsub">Windows · Linux · macOS</div>
+        <ul>
+          <li data-i18n="d1l1">原生窗口 + 任务栏角标 / 窗口闪烁提醒</li>
+          <li data-i18n="d1l2">前端 Vue3 + Naive UI,体积轻、启动快</li>
+          <li data-i18n="d1l3">本地直接读写,无需任何网络配置</li>
+        </ul>
+        <div class="codeblk"><button class="copybtn">复制</button><span class="cm" data-i18n="c_d1a"># 开发调试</span><br><span class="kw">npm</span> install<br><span class="kw">npm</span> run <span class="hl">tauri dev</span><br><br><span class="cm" data-i18n="c_d1b"># 打包发布</span><br><span class="kw">npm</span> run <span class="hl">tauri build</span></div>
+      </div>
+      <div class="dcard sv hot rv d1">
+        <span class="dtag srv" data-i18n="d2_tag">服务端 · 推荐</span>
+        <div class="dic">🖥️</div>
+        <h3 data-i18n="d2t">ccbuddy-server 无头部署</h3>
+        <div class="dsub" data-i18n="d2sub">Linux 服务器 · 浏览器访问</div>
+        <ul>
+          <li data-i18n="d2l1">前端产物编译期嵌入二进制,单文件部署</li>
+          <li data-i18n="d2l2">SSE 实时推送,手机 / 平板浏览器随时查看</li>
+          <li data-i18n="d2l3">强制密码验证,Argon2id 哈希落盘</li>
+        </ul>
+        <div class="codeblk"><button class="copybtn">复制</button><span class="cm" data-i18n="c_s1a"># 构建单文件二进制</span><br>cargo build <span class="hl">--no-default-features</span> --bin ccbuddy-server<br><br><span class="cm" data-i18n="c_s1b"># 运行(默认 127.0.0.1:18787,-p 覆盖端口)</span><br>./ccbuddy-server <span class="hl">-p 9000</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 下载 ═══ -->
+<section id="download">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="dl-badge"><span class="dot"></span><span data-i18n="dl_badge">Latest</span></div>
+      <h2 data-i18n="dl_title">下载安装</h2>
+      <p data-i18n="dl_sub">从 GitHub Releases 获取最新构建,开箱即用 —— 所有链接始终指向 Latest,以后发新版这个页面也不用改。</p>
+    </div>
+    <div class="dl-grid">
+      <div class="dl-card rv">
+        <div class="dl-ic"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516.024.034 1.52.087 2.475-1.258.955-1.345.762-2.391.728-2.43Zm3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422.212-2.189 1.675-2.789 1.698-2.854.023-.065-.597-.79-1.254-1.157a3.692 3.692 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56.244.729.625 1.924 1.273 2.796.576.984 1.34 1.667 1.659 1.899.319.232 1.219.386 1.843.067.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758.347-.79.505-1.217.473-1.282Z"/></svg></div>
+        <h3 data-i18n="dl_mact">macOS</h3>
+        <p class="dl-d" data-i18n="dl_macd">Apple Silicon · dmg 安装包</p>
+        <div class="dl-btns"><a class="btn btn-primary dl-btn" href="https://github.com/xutopia77/ccbuddy/releases/latest/download/ccbuddy-darwin-aarch64.dmg" data-i18n="dl_macb">下载 .dmg</a></div>
+      </div>
+      <div class="dl-card rv d1">
+        <div class="dl-ic"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 0h7v7H0V0zm9 0h7v7H9V0zM0 9h7v7H0V9zm9 0h7v7H9V9z"/></svg></div>
+        <h3 data-i18n="dl_wint">Windows</h3>
+        <p class="dl-d" data-i18n="dl_wind">x86_64 · 安装版 / 便携版</p>
+        <div class="dl-btns">
+          <a class="btn btn-primary dl-btn" href="https://github.com/xutopia77/ccbuddy/releases/latest/download/ccbuddy-windows-x86_64-setup.exe" data-i18n="dl_winb1">安装版 .exe</a>
+          <a class="btn btn-ghost dl-btn" href="https://github.com/xutopia77/ccbuddy/releases/latest/download/ccbuddy-windows-x86_64-portable.zip" data-i18n="dl_winb2">便携版 .zip</a>
+        </div>
+      </div>
+      <div class="dl-card rv d2">
+        <div class="dl-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></div>
+        <h3 data-i18n="dl_lint">Linux</h3>
+        <p class="dl-d" data-i18n="dl_lind">x86_64 · 无头服务端</p>
+        <div class="dl-btns"><a class="btn btn-primary dl-btn" href="https://github.com/xutopia77/ccbuddy/releases/latest/download/ccbuddy-server-linux-x86_64.tar.gz" data-i18n="dl_linb">下载 .tar.gz</a></div>
+      </div>
+    </div>
+    <p class="dl-note rv" data-i18n="dl_note">另有 Hook 独立包(darwin aarch64 / x86_64、linux-x86_64、windows-x86_64)与全部历史版本,见 <a href="https://github.com/xutopia77/ccbuddy/releases/latest" target="_blank" rel="noopener">GitHub Releases</a>。</p>
+  </div>
+</section>
+
+<!-- ═══ 快速开始 ═══ -->
+<section id="quickstart">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="kicker">Quick start</span>
+      <h2 data-i18n="q_title">两分钟跑起来</h2>
+      <p data-i18n="q_sub">克隆仓库 → 构建运行 → 设置页一键安装 Hooks,即可开始监控。</p>
+    </div>
+    <div class="tabs rv">
+      <button class="tab on" data-p="p-desk" data-i18n="tab_desk">桌面端</button>
+      <button class="tab" data-p="p-srv" data-i18n="tab_srv">服务端</button>
+    </div>
+    <div class="panel rv">
+      <div class="codeblk" id="p-desk"><button class="copybtn">复制</button><span class="cm" data-i18n="c_q1a"># 1. 克隆并进入项目</span><br>git clone <span class="st">https://github.com/xutopia77/ccbuddy.git</span><br><span class="kw">cd</span> ccbuddy<br><br><span class="cm" data-i18n="c_q1b"># 2. 开发模式运行(需要 Rust 工具链)</span><br><span class="kw">npm</span> install<br><span class="kw">npm</span> run <span class="hl">tauri dev</span><br><br><span class="cm" data-i18n="c_q1c"># 3. 首次使用:设置页 → 「一键安装 / 更新 Hooks」</span></div>
+      <div class="codeblk" id="p-srv" style="display:none"><button class="copybtn">复制</button><span class="cm" data-i18n="c_q2a"># 1. 构建无头服务端(前端产物嵌入二进制)</span><br>cargo build <span class="hl">--no-default-features</span> --bin ccbuddy-server<br><br><span class="cm" data-i18n="c_q2b"># 2. 启动(首次自动生成随机密码并打印一次)</span><br>./target/debug/ccbuddy-server <span class="hl">-p 18787</span><br><br><span class="cm" data-i18n="c_q2c"># 3. 浏览器打开 → 登录 → 完成</span></div>
+    </div>
+    <p class="qs-extra rv" data-i18n="q_extra">Hook 优先使用本地文件,否则使用程序内嵌 hook(编译期嵌入),<b>全程无需联网</b>。数据全部留在本机:<code>~/.ccbuddy/</code></p>
+  </div>
+</section>
+
+<!-- ═══ 安全 ═══ -->
+<section id="security" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="kicker">Security</span>
+      <h2 data-i18n="s_title">数据不出本机,密码不落明文</h2>
+      <p data-i18n="s_sub">监控工具不该成为新的风险面。CCBuddy 从第一天就按这个标准设计。</p>
+    </div>
+    <div class="sec-grid">
+      <div class="scard rv"><div class="si">🔒</div><h4 data-i18n="sc1t">Argon2id 哈希</h4><p data-i18n="sc1p">访问密码只存 Argon2id 哈希(内存难解、抗 GPU 爆破),明文不落盘,配置文件被读走也无法还原。</p></div>
+      <div class="scard rv d1"><div class="si">🍪</div><h4 data-i18n="sc2t">Session Token</h4><p data-i18n="sc2p">登录签发 HttpOnly Cookie,空闲 15 分钟 / 最长 15 天失效,登录态只存内存,重启即失效。</p></div>
+      <div class="scard rv d2"><div class="si">📵</div><h4 data-i18n="sc3t">零外发</h4><p data-i18n="sc3p">无遥测、无上报、不联网。事件日志是本地纯文本 JSONL,随时可以审计或删除。</p></div>
+      <div class="scard rv d3"><div class="si">🏠</div><h4 data-i18n="sc4t">数据主权</h4><p data-i18n="sc4p">所有数据都在你自己的机器上:事件流、配置、Claude Code 原生记录,删除即消失。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ═══ -->
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head rv" style="margin-bottom:34px">
+      <h2 data-i18n="c_title">别再逐个终端翻了</h2>
+      <p data-i18n="c_sub">一块面板,看清所有 Claude Code 会话。开源免费,MIT 协议。</p>
+    </div>
+    <div class="hero-cta rv" style="margin-top:0">
+      <a class="btn btn-primary" href="#download">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span data-i18n="cta_dl">下载</span>
+      </a>
+      <a class="btn btn-ghost" href="https://github.com/xutopia77/ccbuddy" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span data-i18n="c_btn">GitHub 获取</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Footer ═══ -->
+<footer>
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <span class="logo-tile"><img src="data:image/png;base64,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" alt="CCBuddy"></span>
+      CCBuddy
+    </div>
+    <div class="foot-links">
+      <a href="https://github.com/xutopia77/ccbuddy" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/xutopia77/ccbuddy/issues" target="_blank" rel="noopener">Issues</a>
+      <a href="https://github.com/xutopia77/ccbuddy/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+    </div>
+    <div class="foot-meta">© 2026 xutopia77 · Built with Tauri 2 + Vue 3 + Rust</div>
+  </div>
+</footer>
+
+<script>
+// 标记 JS 可用(入场动画仅在此时启用,保证无 JS 时内容可见)
+document.documentElement.classList.add('js');
+
+/* ═══════════ i18n 中英双语 ═══════════ */
+const I18N = {
+zh:{
+  title:"CCBuddy — Claude Code 会话监控面板",
+  nav_features:"功能",nav_how:"工作原理",nav_forms:"双形态",nav_dl:"下载",nav_qs:"快速开始",nav_sec:"安全",
+  hero_badge:"开源 · MIT License · 为 Claude Code 而生",
+  h1a:"你的 Claude Code",h1b:"会话监控面板",
+  hero_sub:"实时掌握多个 Claude Code 会话的运行状态、事件流与历史记录。<br>谁在等确认、谁在出错、谁跑完了 —— 一眼看清,不再逐个终端切换。",
+  cta_qs:"快速开始",cta_dl:"下载",cta_src:"查看源码",
+  stat1b:"5 种",stat1s:"会话状态实时推断",stat2b:"2 种",stat2s:"发布形态(桌面 / 服务端)",
+  stat3b:"0 依赖",stat3s:"Hook 全程离线工作",stat4b:"1 个",stat4s:"单文件即可部署",
+  dl_badge:"Latest",
+  dl_title:"下载安装",
+  dl_sub:"从 GitHub Releases 获取最新构建,开箱即用 —— 所有链接始终指向 Latest,以后发新版这个页面也不用改。",
+  dl_mact:"macOS",dl_macd:"Apple Silicon · dmg 安装包",dl_macb:"下载 .dmg",
+  dl_wint:"Windows",dl_wind:"x86_64 · 安装版 / 便携版",dl_winb1:"安装版 .exe",dl_winb2:"便携版 .zip",
+  dl_lint:"Linux",dl_lind:"x86_64 · 无头服务端",dl_linb:"下载 .tar.gz",
+  dl_note:"另有 Hook 独立包(darwin aarch64 / x86_64、linux-x86_64、windows-x86_64)与全部历史版本,见 <a href=\"https://github.com/xutopia77/ccbuddy/releases/latest\" target=\"_blank\" rel=\"noopener\">GitHub Releases</a>。",
+  m_events:"事件流",m_history:"历史会话",m_usage:"用量",m_settings:"设置",
+  m_active:"活跃会话 · 4",m_feedtitle:"事件流 · refactor-auth-module",
+  st_run:"运行中",st_confirm:"等待确认",st_input:"等待输入",st_err:"出错",st_done:"已完成",
+  m_e1b:"用户输入",m_e1p:"把 JWT 校验抽成独立中间件…",m_e3p:"Read 完成(1.2k tokens)",
+  m_e5p:"Edit 完成 · +42 −18",m_e7p:"Claude 正在等待你的输入",
+  m_f1:"SSE 已连接",m_f2:"hooks: 3 已注册",m_f3:"增量解析 · mtime 缓存命中",
+  f_title:"专为重度 Claude Code 用户打造",
+  f_sub:"开了十个终端并行干活?CCBuddy 把所有会话装进一块面板,状态变化第一时间知道。",
+  f1t:"实时事件流",f1p:"通过 Claude Code Hooks 采集每次工具调用、用户输入与通知,按会话分文件存储 JSONL 日志,面板实时呈现每个会话正在发生什么。",
+  f2t:"智能状态机",f2p:"事件序列驱动状态推断:运行中 / 等待确认 / 等待输入 / 出错 / 已完成 五种状态一目了然,等待确认与出错自动标记未读,绝不漏掉需要你处理的那一刻。",
+  f3t:"历史会话回放",f3p:'直接读取 Claude Code 原生会话记录(<code>~/.claude/projects/</code>),以聊天记录形式回放完整对话,只读零侵入,不改动任何原始数据。',
+  f4t:"用量统计",f4p:"趋势图 + 环形图直观展示 token 消耗与用量分布,自动刷新周期可调,花的每一批 token 都看得见、算得清。",
+  f5t:"任务栏提醒",f5p:"桌面端支持任务栏角标与窗口闪烁提醒,会话等待确认或出错时即使最小化也不会错过,切回来处理完继续跑。",
+  f6t:"中英双语",f6p:"界面内建中英文切换,桌面端与服务端共用同一套前端,所有视图、状态徽标与图表文案完整覆盖。",
+  h_title:"三步接线,零侵入采集",h_sub:"不改 Claude Code 本体、不联网上报,一条 Hook 管道把事件送进面板。",
+  n1t:"① Hook 采集",n1p:'设置页一键安装 Hooks 到 <code>settings.json</code>,<code>ccbuddy-hook</code> 把事件原样落盘',
+  n2t:"② 本地日志",n2p:'按会话分文件追加写入 <code>~/.ccbuddy/events/</code>,纯文本 JSONL,随时可审计',
+  n3t:"③ 面板呈现",n3p:"按 mtime 增量解析 + 状态机推断,每会话保留最新 50 条事件,资源占用极低",
+  h_note:'历史会话视图直接只读 <code>~/.claude/projects/</code> 原生记录 · 全程离线,hook 无需联网',
+  fm_title:"桌面端 & 服务端,一套前端两种姿势",
+  fm_sub:"前后端通过统一 RPC 协议通信,业务代码不接触 Tauri / HTTP 细节 —— 同一个界面,既能跑在桌面上,也能跑在服务器里。",
+  d1_tag:"桌面端",d1t:"Tauri 2 原生应用",
+  d1l1:"原生窗口 + 任务栏角标 / 窗口闪烁提醒",d1l2:"前端 Vue3 + Naive UI,体积轻、启动快",d1l3:"本地直接读写,无需任何网络配置",
+  c_d1a:"# 开发调试",c_d1b:"# 打包发布",
+  d2_tag:"服务端 · 推荐",d2t:"ccbuddy-server 无头部署",d2sub:"Linux 服务器 · 浏览器访问",
+  d2l1:"前端产物编译期嵌入二进制,单文件部署",d2l2:"SSE 实时推送,手机 / 平板浏览器随时查看",d2l3:"强制密码验证,Argon2id 哈希落盘",
+  c_s1a:"# 构建单文件二进制",c_s1b:"# 运行(默认 127.0.0.1:18787,-p 覆盖端口)",
+  sh_title:"一睹为快",sh_sub:"界面长什么样?一张图说话。",
+  sh1h:"用量面板",sh1p:"用量卡片、Token 消耗趋势、活跃热力图与构成占比一览。",sh1img:"usage-zh.jpg",
+  q_title:"两分钟跑起来",q_sub:"克隆仓库 → 构建运行 → 设置页一键安装 Hooks,即可开始监控。",
+  tab_desk:"桌面端",tab_srv:"服务端",
+  c_q1a:"# 1. 克隆并进入项目",c_q1b:"# 2. 开发模式运行(需要 Rust 工具链)",c_q1c:"# 3. 首次使用:设置页 → 「一键安装 / 更新 Hooks」",
+  c_q2a:"# 1. 构建无头服务端(前端产物嵌入二进制)",c_q2b:"# 2. 启动(首次自动生成随机密码并打印一次)",c_q2c:"# 3. 浏览器打开 → 登录 → 完成",
+  q_extra:'Hook 优先使用本地文件,否则使用程序内嵌 hook(编译期嵌入),<b>全程无需联网</b>。数据全部留在本机:<code>~/.ccbuddy/</code>',
+  s_title:"数据不出本机,密码不落明文",s_sub:"监控工具不该成为新的风险面。CCBuddy 从第一天就按这个标准设计。",
+  sc1t:"Argon2id 哈希",sc1p:"访问密码只存 Argon2id 哈希(内存难解、抗 GPU 爆破),明文不落盘,配置文件被读走也无法还原。",
+  sc2t:"Session Token",sc2p:"登录签发 HttpOnly Cookie,空闲 15 分钟 / 最长 15 天失效,登录态只存内存,重启即失效。",
+  sc3t:"零外发",sc3p:"无遥测、无上报、不联网。事件日志是本地纯文本 JSONL,随时可以审计或删除。",
+  sc4t:"数据主权",sc4p:"所有数据都在你自己的机器上:事件流、配置、Claude Code 原生记录,删除即消失。",
+  c_title:"别再逐个终端翻了",c_sub:"一块面板,看清所有 Claude Code 会话。开源免费,MIT 协议。",c_btn:"GitHub 获取",
+  copy:"复制",copy_ok:"已复制 ✓",copy_fail:"复制失败"
+},
+en:{
+  title:"CCBuddy — Session Monitor for Claude Code",
+  nav_features:"Features",nav_how:"How it works",nav_forms:"Two forms",nav_dl:"Download",nav_qs:"Quick start",nav_sec:"Security",
+  hero_badge:"Open source · MIT License · Built for Claude Code",
+  h1a:"Your Claude Code",h1b:"Session Dashboard",
+  hero_sub:"Track live status, event streams and history across all your Claude Code sessions.<br>Who's waiting for approval, who errored, who's done — one glance, no terminal juggling.",
+  cta_qs:"Quick Start",cta_dl:"Download",cta_src:"View Source",
+  stat1b:"5",stat1s:"session states, inferred live",stat2b:"2",stat2s:"release forms (desktop & server)",
+  stat3b:"0",stat3s:"network deps — hooks work offline",stat4b:"1",stat4s:"single-file deployment",
+  dl_badge:"Latest",
+  dl_title:"Download",
+  dl_sub:"Grab the latest build from GitHub Releases — every link always points to Latest, so this page never needs updating.",
+  dl_mact:"macOS",dl_macd:"Apple Silicon · .dmg image",dl_macb:"Download .dmg",
+  dl_wint:"Windows",dl_wind:"x86_64 · installer / portable",dl_winb1:"Installer .exe",dl_winb2:"Portable .zip",
+  dl_lint:"Linux",dl_lind:"x86_64 · headless server",dl_linb:"Download .tar.gz",
+  dl_note:"Also available: standalone Hook builds (darwin aarch64 / x86_64, linux-x86_64, windows-x86_64) and all previous versions on <a href=\"https://github.com/xutopia77/ccbuddy/releases/latest\" target=\"_blank\" rel=\"noopener\">GitHub Releases</a>.",
+  m_events:"Events",m_history:"History",m_usage:"Usage",m_settings:"Settings",
+  m_active:"Active sessions · 4",m_feedtitle:"Events · refactor-auth-module",
+  st_run:"Running",st_confirm:"Confirm",st_input:"Input",st_err:"Error",st_done:"Done",
+  m_e1b:"User prompt",m_e1p:"Extract JWT validation into middleware…",m_e3p:"Read done (1.2k tokens)",
+  m_e5p:"Edit done · +42 −18",m_e7p:"Claude is waiting for your input",
+  m_f1:"SSE connected",m_f2:"hooks: 3 registered",m_f3:"incremental parse · mtime cache hit",
+  f_title:"Built for heavy Claude Code users",
+  f_sub:"Running ten terminals in parallel? CCBuddy puts every session on one panel and tells you the moment anything changes.",
+  f1t:"Live event stream",f1p:"Claude Code Hooks capture every tool call, user prompt and notification into per-session JSONL logs — the panel shows what each session is doing, as it happens.",
+  f2t:"Smart state machine",f2p:"Event sequences drive state inference: Running / Confirm / Input / Error / Done at a glance. Awaiting-approval and error states are flagged unread, so you never miss the moment you're needed.",
+  f3t:"History replay",f3p:'Reads Claude Code\'s native session records (<code>~/.claude/projects/</code>) and replays full conversations as chat threads — read-only, zero intrusion, original data untouched.',
+  f4t:"Usage analytics",f4p:"Trend and donut charts make token spend and distribution visible, with an adjustable auto-refresh interval. Every batch of tokens, accounted for.",
+  f5t:"Taskbar alerts",f5p:"The desktop app flashes its taskbar badge when a session needs approval or hits an error — even minimized, you won't miss it.",
+  f6t:"Bilingual UI",f6p:"Built-in Chinese / English switching. Desktop and server share the same frontend — every view, badge and chart label fully covered.",
+  h_title:"Three steps, zero intrusion",h_sub:"No changes to Claude Code itself, nothing leaves your machine — one hook pipeline feeds the panel.",
+  n1t:"① Hook capture",n1p:'One click in Settings installs Hooks into <code>settings.json</code>; <code>ccbuddy-hook</code> writes events to disk as-is',
+  n2t:"② Local logs",n2p:'Appended per session under <code>~/.ccbuddy/events/</code> — plain JSONL, auditable anytime',
+  n3t:"③ Panel rendering",n3p:"Incremental mtime-based parsing + state machine, latest 50 events per session, minimal footprint",
+  h_note:'History view read-only from native records in <code>~/.claude/projects/</code> · fully offline, no network needed',
+  fm_title:"Desktop & server — one frontend, two ways to run",
+  fm_sub:"Frontend and backend talk over a unified RPC protocol, shielded from Tauri / HTTP details — the same UI runs on your desktop or in a browser.",
+  d1_tag:"Desktop",d1t:"Tauri 2 native app",
+  d1l1:"Native window + taskbar badge / flash alerts",d1l2:"Vue3 + Naive UI frontend — light and fast",d1l3:"Reads and writes locally, zero network config",
+  c_d1a:"# Dev",c_d1b:"# Build",
+  d2_tag:"Server · recommended",d2t:"ccbuddy-server headless",d2sub:"Linux server · browser access",
+  d2l1:"Frontend embedded into the binary at build time — single-file deploy",d2l2:"SSE live push — check in from any phone or tablet",d2l3:"Mandatory password auth, Argon2id-hashed at rest",
+  c_s1a:"# Build the single-file binary",c_s1b:"# Run (default 127.0.0.1:18787, -p overrides port)",
+  sh_title:"Take a look",sh_sub:"What does it look like? One screenshot.",
+  sh1h:"Usage panel",sh1p:"Usage cards, token spend trend, activity heatmap and composition at a glance.",sh1img:"usage.jpg",
+  q_title:"Up and running in 2 minutes",q_sub:"Clone → build & run → one-click hook install in Settings — you're monitoring.",
+  tab_desk:"Desktop",tab_srv:"Server",
+  c_q1a:"# 1. Clone and enter the project",c_q1b:"# 2. Run in dev mode (Rust toolchain required)",c_q1c:"# 3. First run: Settings → \"Install / Update Hooks\"",
+  c_q2a:"# 1. Build the headless server (frontend embedded)",c_q2b:"# 2. Start (a random password is printed once)",c_q2c:"# 3. Open in browser → log in → done",
+  q_extra:'Hooks prefer a local file, else fall back to the embedded one (compiled in) — <b>no network needed</b>. All data stays local: <code>~/.ccbuddy/</code>',
+  s_title:"Data stays local, passwords never plaintext",s_sub:"A monitoring tool shouldn't become a new attack surface. CCBuddy was designed to that standard from day one.",
+  sc1t:"Argon2id hashing",sc1p:"Passwords are stored only as Argon2id hashes (memory-hard, GPU-resistant). No plaintext on disk — even a leaked config reveals nothing.",
+  sc2t:"Session token",sc2p:"Login issues an HttpOnly cookie, idle after 15 min / max 15 days, held in memory only — gone on restart.",
+  sc3t:"Zero telemetry",sc3p:"No tracking, no reporting, no network. Event logs are plain local JSONL — audit or delete them anytime.",
+  sc4t:"Data ownership",sc4p:"Everything lives on your machine: event streams, config, native Claude Code records. Delete and it's gone.",
+  c_title:"Stop juggling terminals",c_sub:"One panel for all your Claude Code sessions. Free and open source under MIT.",c_btn:"Get it on GitHub",
+  copy:"Copy",copy_ok:"Copied ✓",copy_fail:"Failed"
+}};
+
+let LANG = 'zh';
+function detectLang(){
+  const saved = localStorage.getItem('ccbuddy_lang');
+  if(saved === 'zh' || saved === 'en') return saved;
+  const nav = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+  return /^zh/i.test(nav) ? 'zh' : 'en';
+}
+function setLang(lang, persist){
+  LANG = lang;
+  const d = I18N[lang];
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  document.title = d.title;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const v = d[el.getAttribute('data-i18n')];
+    if(v !== undefined) el.innerHTML = v;
+  });
+  document.getElementById('langBtn').textContent = lang === 'zh' ? 'EN' : '中文';
+  // 截图有中英两版(界面文案已随语言切换,图也得跟着换)
+  const shot = document.getElementById('shotUsage');
+  if(shot) shot.src = d.sh1img;
+  if(persist) localStorage.setItem('ccbuddy_lang', lang);
+}
+setLang(detectLang(), false);
+document.getElementById('langBtn').addEventListener('click', ()=> setLang(LANG === 'zh' ? 'en' : 'zh', true));
+
+// 移动端菜单
+const hb=document.getElementById('hamburger'),nl=document.getElementById('navLinks');
+hb.addEventListener('click',()=>nl.classList.toggle('open'));
+nl.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nl.classList.remove('open')));
+
+// 入场动画
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv:not(.in)').forEach(el=>io.observe(el));
+// 兜底:任何原因导致 IntersectionObserver 未触发时,10s 后全部显示
+setTimeout(()=>document.querySelectorAll('.rv:not(.in)').forEach(el=>el.classList.add('in')),10000);
+
+// 快速开始 Tab 切换
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  t.classList.add('on');
+  document.getElementById('p-desk').style.display=t.dataset.p==='p-desk'?'block':'none';
+  document.getElementById('p-srv').style.display=t.dataset.p==='p-srv'?'block':'none';
+}));
+
+// 代码复制
+document.querySelectorAll('.copybtn').forEach(btn=>btn.addEventListener('click',async()=>{
+  const blk=btn.parentElement;
+  const txt=Array.from(blk.childNodes).filter(n=>n.nodeType===3||n.tagName==='BR')
+    .map(n=>n.tagName==='BR'?'\n':n.textContent).join('').trim();
+  try{await navigator.clipboard.writeText(txt);btn.textContent=I18N[LANG].copy_ok}catch(e){btn.textContent=I18N[LANG].copy_fail}
+  setTimeout(()=>btn.textContent=I18N[LANG].copy,1600);
+}));
+</script>
+</body>
+</html>

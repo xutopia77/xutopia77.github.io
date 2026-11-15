@@ -48,6 +48,7 @@ import { rehypeMermaid } from "./src/plugins/rehype-mermaid.mjs";
 import { rehypePlantuml } from "./src/plugins/rehype-plantuml.mjs";
 import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
 import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
+import remarkBlogImages from "./src/plugins/remark-blog-images.mjs";
 import { remarkImageGrid } from "./src/plugins/remark-image-grid.js";
 import { remarkMermaid } from "./src/plugins/remark-mermaid.js";
 import { remarkPlantuml } from "./src/plugins/remark-plantuml.js";
@@ -70,7 +71,17 @@ export default defineConfig({
 	site: siteConfig.site_url,
 
 	base: "/",
-	trailingSlash: "always",
+	// [本地适配] 主题原值 "always" 会导致 dev 下 /blog（无尾斜杠）404。
+	// 改为 "ignore"：静态产物不变（仍是 dist/blog/index.html 目录结构），
+	// 无斜杠地址由部署平台自动 301 到带斜杠版本（GitHub Pages / Cloudflare Pages 均支持）。
+	trailingSlash: "ignore",
+
+	// 旧站 URL 兼容：about.md 与 project-index 卡片里引用的是 /project/<name>
+	// 和 /xutopia77-projects.html，静态构建时生成 meta-refresh 跳转页
+	redirects: {
+		"/project/[slug]": "/projects/[slug]",
+		"/xutopia77-projects.html": "/projects/",
+	},
 
 	// 字体配置 - 只加载实际使用的字体，跳过未引用的以加快构建
 	fonts: (() => {
@@ -293,6 +304,7 @@ export default defineConfig({
 				remarkMath,
 				remarkReadingTime,
 				remarkWikiLink,
+				remarkBlogImages,
 				remarkImageGrid,
 				remarkExcerpt,
 				remarkDirective,

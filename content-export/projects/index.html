@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects | xutopia.top</title>
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+/* 和 xutopia.top 首页深色配色对齐 */
+body{
+    max-width:960px;
+    margin:0 auto;
+    padding:32px 20px;
+    color:#e2e8f0;
+    background-color:#0f1117;
+    line-height:1.65;
+}
+nav{
+    margin-bottom:40px;
+    padding-bottom:16px;
+    border-bottom:1px solid #272a33;
+}
+nav a{
+    color:#94a3b8;
+    text-decoration:none;
+}
+nav a:hover{
+    color:#cbd5e1;
+    text-decoration:underline;
+}
+h1{
+    font-size:28px;
+    margin-bottom:8px;
+    color:#f8fafc;
+}
+.subtitle{
+    color:#94a3b8;
+    margin-bottom:32px;
+}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
+    gap:24px;
+}
+.card{
+    background-color:#1a1d26;
+    border:1px solid #2c303b;
+    border-radius:12px;
+    padding:20px;
+    transition:0.22s ease;
+}
+.card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 10px 28px rgba(0,0,0,0.35);
+    border-color:#3b4150;
+}
+.card h2{
+    font-size:18px;
+    margin-bottom:8px;
+    color:#f1f5f9;
+}
+.card p{
+    color:#94a3b8;
+    font-size:14px;
+    margin-bottom:12px;
+}
+.card a{
+    color:#60a5fa;
+    text-decoration:none;
+    font-size:14px;
+    margin-right:16px;
+}
+.card a:hover{
+    text-decoration:underline;
+}
+footer{
+    margin-top:64px;
+    padding-top:20px;
+    border-top:1px solid #272a33;
+    color:#64748b;
+    font-size:13px;
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="https://xutopia.top">Home</a>
+</nav>
+
+<h1>Projects</h1>
+<p class="subtitle">个人开发项目、工具与实验作品</p>
+
+<div class="grid">
+  <div class="card">
+    <h2>📹 Record Manager</h2>
+    <p>安防监控视频文件管理软件，支持视频检索、智能分类、标签标注、关键帧提取</p>
+    <a href="https://github.com/xutopia77/record_manager" target="_blank">GitHub</a>
+    <a href="https://xutopia.top/project/record-manager" target="_blank">软件介绍</a>
+  </div>
+
+  <div class="card">
+    <h2>🖼️ Time Tidy</h2>
+    <p>图片与视频管理工具，非侵入式设计，支持Web端和桌面端</p>
+    <a href="https://github.com/xutopia77/timetidy-prj" target="_blank">GitHub</a>
+    <a href="https://xutopia.top/project/timetidy" target="_blank">软件介绍</a>
+  </div>
+
+  <div class="card">
+    <h2>🤖 ccbuddy</h2>
+    <p>你的 Claude Code 会话监控面板</p>
+    <a href="https://github.com/xutopia77/ccbuddy" target="_blank">GitHub</a>
+    <a href="https://xutopia.top/project/ccbuddy" target="_blank">软件介绍</a>
+  </div>
+</div>
+
+<footer>© 2026 xutopia.top</footer>
+</body>
+</html>

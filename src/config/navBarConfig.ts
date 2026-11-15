@@ -13,13 +13,13 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 	// 基础导航栏链接
 	const links: NavBarLink[] = [];
 
-	// 主页
+	// 主页（自定义门面页）
 	links.push(LinkPresets.Home);
 
-	// 文章及其子菜单
+	// 博客及其子菜单（文章列表已从首页迁移到 /blog/）
 	links.push({
-		name: "文章",
-		url: "#",
+		name: "博客",
+		url: "/blog/",
 		icon: "material-symbols:article",
 		children: [
 			// 归档
@@ -30,107 +30,11 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 
 			// 标签
 			LinkPresets.Tags,
-
-			// 系列
-			LinkPresets.Series,
 		],
 	});
 
-	//社交及其子菜单
-	links.push({
-		name: "社交",
-		url: "#",
-		icon: "material-symbols:group",
-		children: [
-			// 友链
-			LinkPresets.Friends,
-
-			// 留言
-			LinkPresets.Guestbook,
-		],
-	});
-
-	// 我的及其子菜单
-	links.push({
-		name: "我的",
-		url: "#",
-		icon: "material-symbols:person",
-		children: [
-			// 动态
-			LinkPresets.Dynamic,
-
-			// 项目
-			LinkPresets.Projects,
-
-			// 相册
-			LinkPresets.Gallery,
-
-			// 书签导航
-			LinkPresets.Booknav,
-
-			// 哔哩哔哩追番
-			LinkPresets.Bilibili,
-
-			// 番组计划
-			LinkPresets.Bangumi,
-
-			// VNDB
-			LinkPresets.VNDB,
-
-			// MyAnimeList
-			LinkPresets.MAL,
-		],
-	});
-
-	// 关于及其子菜单
-	links.push({
-		name: "关于",
-		url: "#",
-		icon: "material-symbols:info",
-		children: [
-			// 打赏
-			LinkPresets.Sponsor,
-
-			// 关于页面
-			LinkPresets.About,
-		],
-	});
-
-	// 自定义导航栏链接
-	links.push({
-		name: "链接",
-		url: "#",
-		icon: "material-symbols:link",
-		// 子菜单
-		children: [
-			{
-				name: "GitHub",
-				url: "https://github.com/CuteLeaf/Firefly",
-				external: true,
-				icon: "fa7-brands:github",
-			},
-			{
-				name: "Gitee",
-				url: "https://gitee.com/CuteLeaf/Firefly",
-				external: true,
-				icon: "fa7-brands:gitee",
-			},
-			{
-				name: "Firefly文档",
-				url: "https://docs-firefly.cuteleaf.cn",
-				external: true,
-				icon: "material-symbols:docs",
-			},
-		],
-	});
-
-	// 文档链接
-	// links.push({
-	// 	name: "文档",
-	// 	url: "https://docs-firefly.cuteleaf.cn",
-	// 	external: true,
-	// 	icon: "material-symbols:docs",
-	// });
+	// 关于页面
+	links.push(LinkPresets.About);
 
 	return { links } as NavBarConfig;
 };
@@ -152,17 +56,17 @@ export const LinkPresets: Record<string, NavBarLink> = {
 	},
 	Archive: {
 		name: "归档",
-		url: "/archive/",
+		url: "/blog/archive/",
 		icon: "material-symbols:archive",
 	},
 	Categories: {
 		name: "分类",
-		url: "/categories/",
+		url: "/blog/categories/",
 		icon: "material-symbols:folder-open-rounded",
 	},
 	Tags: {
 		name: "标签",
-		url: "/tags/",
+		url: "/blog/tags/",
 		icon: "material-symbols:tag-rounded",
 	},
 	Series: {
@@ -238,7 +142,7 @@ export const LinkPresets: Record<string, NavBarLink> = {
 	},
 	About: {
 		name: "关于我",
-		url: "/about/",
+		url: "/blog/about/",
 		icon: "material-symbols:person",
 	},
 };

@@ -36,12 +36,13 @@ function joinUrl(...parts: string[]): string {
 export function getPostUrlBySlug(slug: string): string {
 	// 移除文件扩展名（如 .md, .mdx 等）
 	const slugWithoutExt = removeFileExtension(slug);
-	return url(`/posts/${slugWithoutExt}/`);
+	// 与旧 Hexo 站保持一致：文章 URL = /blog/<slug>/
+	return url(`/blog/${slugWithoutExt}/`);
 }
 
 export function getTagUrl(tag: string): string {
-	if (!tag) return url("/archive/");
-	return url(`/archive/?tag=${encodeURIComponent(tag.trim())}`);
+	if (!tag) return url("/blog/archive/");
+	return url(`/blog/archive/?tag=${encodeURIComponent(tag.trim())}`);
 }
 
 export function getCategoryUrl(category: string | null): string {
@@ -50,8 +51,8 @@ export function getCategoryUrl(category: string | null): string {
 		category.trim() === "" ||
 		category.trim().toLowerCase() === i18n(I18nKey.uncategorized).toLowerCase()
 	)
-		return url("/archive/?uncategorized=true");
-	return url(`/archive/?category=${encodeURIComponent(category.trim())}`);
+		return url("/blog/archive/?uncategorized=true");
+	return url(`/blog/archive/?category=${encodeURIComponent(category.trim())}`);
 }
 
 export function getDir(path: string): string {
@@ -77,7 +78,7 @@ export function getSearchUrl(query: string): string {
 // 自我 canonical。分页（/2/）、文章页等无查询串的路径保持原样。
 export function getCanonicalUrl(urlObj: URL): string {
 	const pathname = urlObj.pathname;
-	if (pathname === "/archive/" || pathname === "/search/") {
+	if (pathname === "/blog/archive/" || pathname === "/search/") {
 		return new URL(pathname, urlObj.origin).toString();
 	}
 	return urlObj.toString();
@@ -97,10 +98,10 @@ export function url(path: string): string {
 	return joinUrl("", import.meta.env.BASE_URL, path);
 }
 
-// 内容详情页路径模式：文章(/posts/、/post/) 与 项目详情(/projects/<slug>/)
+// 内容详情页路径模式：文章(/blog/) 与 项目详情(/projects/<slug>/)
 // 用正则而非 includes("/projects/")，是为了不把 /projects/ 列表页误判成详情页
 const CONTENT_DETAIL_PATH_PATTERNS = [
-	/\/posts\/.+/,
+	/\/blog\/.+/,
 	/\/post\/.+/,
 	/\/projects\/.+/,
 ];

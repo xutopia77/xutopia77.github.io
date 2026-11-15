@@ -19,8 +19,8 @@ type KeyPage = {
 // 主要页面：首页 / 归档 / 关于始终包含；其余按 siteConfig.pages 开关过滤
 const KEY_PAGES: KeyPage[] = [
 	{ labelKey: I18nKey.home, path: "/" },
-	{ labelKey: I18nKey.archive, path: "/archive/" },
-	{ labelKey: I18nKey.about, path: "/about/" },
+	{ labelKey: I18nKey.archive, path: "/blog/archive/" },
+	{ labelKey: I18nKey.about, path: "/blog/about/" },
 	{
 		labelKey: I18nKey.friends,
 		path: "/friends/",
@@ -115,7 +115,7 @@ export const GET: APIRoute = async ({ site }) => {
 	}
 	lines.push("", "## Recent Posts");
 	for (const post of recentPosts) {
-		const link = abs(url(`/posts/${post.id}/`));
+		const link = abs(url(`/blog/${post.id}/`));
 		const desc = post.data.description || "";
 		lines.push(
 			desc

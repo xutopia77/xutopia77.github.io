@@ -59,12 +59,17 @@ type ContentCollection<T> = CollectionConfig<
 	ReturnType<typeof glob>
 >;
 
+// ── 内容来源：仓库内快照 content-export/ ────────────────────────
+// 快照由 scripts/export-content.ts 从笔记库导出（pnpm export:content），
+// 站点构建与笔记库零耦合，CI 无需访问笔记仓库。
+// 发布流程：笔记标 publish: true → pnpm export:content → 提交快照 → push
+
 const postsCollection: ContentCollection<PostData> = defineCollection({
-	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts" }),
+	loader: glob({ pattern: "**/*.md", base: "./content-export/posts" }),
 	schema: z.object({
 		title: z.string(),
-		published: z.date(),
-		updated: z.date().optional(),
+		published: z.coerce.date(),
+		updated: z.coerce.date().optional(),
 		draft: z.boolean().optional().default(false),
 		description: z.string().optional().default(""),
 		image: z.string().optional().default(""),
@@ -96,6 +101,19 @@ const specCollection: ContentCollection<Record<string, never>> =
 		schema: z.object({}),
 	});
 
+// 关于页快照：content-export/about.md（源自 note/10-projects/12-blog-dev/about.md）
+const aboutCollection = defineCollection({
+	loader: glob({
+		pattern: "about.md",
+		base: "./content-export",
+	}),
+	schema: z.object({
+		title: z.string().optional().default(""),
+		date: z.coerce.date().optional(),
+		comments: z.boolean().optional(),
+	}),
+});
+
 const dynamicCollection: ContentCollection<DynamicData> = defineCollection({
 	loader: glob({ pattern: "**/*.md", base: "./src/content/dynamic" }),
 	schema: z.object({
@@ -106,26 +124,26 @@ const dynamicCollection: ContentCollection<DynamicData> = defineCollection({
 });
 
 const projectsCollection: ContentCollection<ProjectData> = defineCollection({
-	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
+	loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
 	schema: z.object({
 		title: z.string(),
-		published: z.date(),
+		description: z.string(),
+		published: z.coerce.date(),
 		draft: z.boolean().optional().default(false),
 		order: z.number().optional(),
-		description: z.string().optional().default(""),
 		image: z.string().optional().default(""),
 		tags: z.array(z.string()).optional().default([]),
 		link: z
 			.array(
 				z.object({
 					label: z.string(),
-					icon: z.string().optional().default(""),
+					icon: z.string(),
 					value: z.string(),
 				}),
 			)
 			.optional()
 			.default([]),
-		status: z.string().optional().default(""),
+		status: z.string().default("Under Review"),
 		lang: z.string().optional().default(""),
 	}),
 });
@@ -134,10 +152,12 @@ export const collections: {
 	dynamic: typeof dynamicCollection;
 	posts: typeof postsCollection;
 	spec: typeof specCollection;
+	about: typeof aboutCollection;
 	projects: typeof projectsCollection;
 } = {
 	dynamic: dynamicCollection,
 	posts: postsCollection,
 	spec: specCollection,
+	about: aboutCollection,
 	projects: projectsCollection,
 };
