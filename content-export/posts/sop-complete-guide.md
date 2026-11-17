@@ -3,8 +3,8 @@ title: SOP全维度详细讲解：从核心定义到实战落地的完整指南
 published: '2026-04-10'
 description: ''
 tags:
-  - 工作流
-category: 工作流
+  - engineer
+category: engineer
 ---
 # SOP（Standard Operating Procedure）全维度详细讲解
 

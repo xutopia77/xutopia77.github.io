@@ -5,7 +5,7 @@ description: ''
 tags:
   - 思考
   - 写作
-category: 思考
+category: 写作
 ---
 *第一性原理：从赚钱到系统复制的底层思维框架*
 

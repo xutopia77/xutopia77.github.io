@@ -8,6 +8,7 @@
   "packageManager": "pnpm@11.22.0",
   "scripts": {
     "export:content": "tsx scripts/export-content.ts",
+    "update": "tsx scripts/export-content.ts",
     "dev": "astro dev",
     "start": "astro dev",
     "check": "astro check",

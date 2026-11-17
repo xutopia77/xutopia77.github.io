@@ -5,7 +5,7 @@ description: ''
 tags:
   - 思考
   - ai
-category: ai思考
+category: ai
 ---
 > 当软件的核心用户从人类变成AI智能体，一场席卷整个软件产业的底层变革已经到来。
 

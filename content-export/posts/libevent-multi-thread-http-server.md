@@ -5,7 +5,7 @@ description: ''
 tags:
   - libevent
   - cplusplus
-category: code
+category: cplusplus
 ---
 项目需要实现一个HTTP/1.0版本的Web服务器，支持GET、POST方法，运行在嵌入式Linux系统中，并且需要处理大量并发请求。综合考虑后，选择使用libevent实现多线程HTTP服务器。
 

@@ -5,7 +5,7 @@ description: ''
 tags:
   - ai
   - 读书笔记
-category: ai思考
+category: ai
 ---
 ```
 当AI成为完美替身，我们亲手淘汰了自己，《代理人》一部预言人类困境的AI寓言。被算法驯化的人类，还剩下什么？

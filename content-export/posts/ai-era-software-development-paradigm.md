@@ -5,7 +5,7 @@ description: ''
 tags:
   - 软件工程
   - ai
-category: ai思考
+category: ai
 ---
 # 🚀 AI新时代软件开发范式：从传统研发到LLM原生工程体系的革命性变革
 

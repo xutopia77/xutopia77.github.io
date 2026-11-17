@@ -4,7 +4,7 @@ published: '2026-04-11'
 description: ''
 tags:
   - 云计算
-category: code
+category: engineer
 ---
 # 云计算服务模型全解析：从 IaaS 到 CaaS，一文读懂所有「aaS」
 > 给程序员的云计算模型指南，建议收藏

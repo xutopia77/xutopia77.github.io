@@ -5,7 +5,7 @@ description: ''
 tags:
   - 思考
   - ai
-category: ai思考
+category: ai
 ---
 <img src="https://imgbed.xutopia.top/image-assets/fa40e3821f912e0743791be2a94c8662.jpg" width="50%">
 # 从“知”到“行”：AI技能革命与传统行业的破局之路
